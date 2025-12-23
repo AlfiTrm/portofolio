@@ -54,7 +54,7 @@ export default function HeroContent() {
           <ShatteredImage
             src="/hero/gambaralfi.webp"
             alt="Alfi Tsani"
-            className="w-80 h-80 md:w-[600px] md:h-[600px] absolute bottom-0"
+            className="w-80 h-80 md:w-[550px] md:h-[550px] absolute bottom-0"
           />
         </motion.div>
       </motion.div>
