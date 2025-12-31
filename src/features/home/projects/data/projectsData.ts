@@ -11,7 +11,6 @@ export const projectsData = {
       tags: ["React", "JavaScript", "Tailwind CSS"],
       category: "Web",
       liveUrl: "https://iflchaptermalang.org/",
-      githubUrl: "#",
       featured: true,
     },
     {
@@ -23,7 +22,6 @@ export const projectsData = {
       tags: ["Next.js", "TypeScript", "Tailwind CSS"],
       category: "Web",
       liveUrl: "https://itfest-filkom.com/home",
-      githubUrl: "#",
       featured: true,
     },
     {
@@ -35,7 +33,17 @@ export const projectsData = {
       tags: ["React", "JavaScript", "Tailwind CSS"],
       category: "Web",
       liveUrl: "https://kbmdsi.ub.ac.id/",
-      githubUrl: "#",
+      featured: true,
+    },
+    {
+      id: 4,
+      title: "Akademicompetition",
+      description:
+        "A comprehensive platform built from scratch, featuring full authentication, a robust admin dashboard, and complete user-facing features including competition cards and user management.",
+      image: "/projects/akademicompetition.webp",
+      tags: ["React", "JavaScript", "Tailwind CSS"],
+      category: "Web",
+      liveUrl: "https://akademicompetition.id/",
       featured: true,
     },
   ],

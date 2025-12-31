@@ -1,10 +1,26 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import ScrambleText from "@/shared/components/ScrambleText";
 import ShatteredImage from "./ShatteredImage";
-import { personalData } from "../data/personalData";
 
 export default function HeroContent() {
+  const [currentRole, setCurrentRole] = useState("Junior Frontend Developer");
+
+  useEffect(() => {
+    const roles = ["Junior Frontend Developer", "Future Fullstack Developer"];
+    let index = 0;
+
+    // Initial scramble for first render
+    const timer = setInterval(() => {
+      index = (index + 1) % roles.length;
+      setCurrentRole(roles[index]);
+    }, 4000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -40,13 +56,17 @@ export default function HeroContent() {
           variants={itemVariants}
           className="text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-none tracking-tight mb-4"
         >
-          Alfi Tsani
+          <ScrambleText text="Alfi Tsani" scrambleOnHover={false} />
         </motion.h1>
 
         <motion.div variants={itemVariants} className="mb-50 md:mb-60">
-          <div className="w-16 h-[1px] bg-white/20 mx-auto mb-4" />
-          <h2 className="text-base md:text-lg font-light text-white/30 uppercase tracking-[0.4em]">
-            {personalData.position}
+          <div className="w-16 h-1 bg-white/20 mx-auto mb-6" />
+          <h2 className="text-lg md:text-xl font-light text-white/50 uppercase tracking-[0.3em] h-8">
+            <ScrambleText
+              text={currentRole}
+              className="text-white/70"
+              scrambleClassName="text-white/40"
+            />
           </h2>
         </motion.div>
 

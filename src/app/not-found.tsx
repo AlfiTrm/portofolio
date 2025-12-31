@@ -2,10 +2,29 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
-import SnakeGame from "@/features/not-found/components/SnakeGame";
-import PongGame from "@/features/not-found/components/PongGame";
 import { FaHome, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+
+const SnakeGame = dynamic(
+  () => import("@/features/not-found/components/SnakeGame"),
+  {
+    loading: () => (
+      <div className="w-[600px] h-[600px] bg-white/5 rounded-xl animate-pulse" />
+    ),
+    ssr: false,
+  }
+);
+
+const PongGame = dynamic(
+  () => import("@/features/not-found/components/PongGame"),
+  {
+    loading: () => (
+      <div className="w-[600px] h-[600px] bg-white/5 rounded-xl animate-pulse" />
+    ),
+    ssr: false,
+  }
+);
 
 export default function NotFound() {
   const [gameIndex, setGameIndex] = useState(0);
@@ -104,13 +123,13 @@ export default function NotFound() {
 
         <Link
           href="/"
-          className="flex items-center gap-2 px-8 py-3 bg-white text-black font-bold rounded-full hover:bg-white/90 transition-all hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.3)] mt-4"
+          className="relative z-50 flex items-center gap-2 px-8 py-3 bg-white text-black font-bold rounded-full hover:bg-white/90 transition-all hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.3)] mt-4 cursor-pointer"
         >
           <FaHome /> RETURN TO BASE
         </Link>
       </div>
 
-      <div className="absolute bottom-4 left-0 right-0 text-center text-white/10 text-xs font-mono">
+      <div className="absolute bottom-4 left-0 right-0 text-center text-white/10 text-xs font-mono pointer-events-none">
         SYSTEM_ID: NULL
       </div>
     </div>

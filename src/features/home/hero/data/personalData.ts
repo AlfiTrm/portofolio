@@ -1,7 +1,7 @@
 export const personalData = {
   name: "Alfi Tsani",
   title: "Junior Frontend Developer",
-  greeting: "Hello There, Wellcome",
+  greeting: "Hello There, Welcome",
   tagline: "I'M AN",
   role: "JUNIOR",
   position: "FRONTEND DEVELOPER",
@@ -22,5 +22,5 @@ export const personalData = {
 export const socialLinks = {
   github: "https://github.com/alfitsani",
   linkedin: "https://linkedin.com/in/alfitsani",
-  email: "mailto:alfi@example.com"
+  email: "mailto:grackrec@gmail.com"
 };

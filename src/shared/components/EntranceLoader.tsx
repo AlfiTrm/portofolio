@@ -21,9 +21,8 @@ export default function EntranceLoader({
       await new Promise((r) => setTimeout(r, 1200));
 
       setPhase("warp");
-      onComplete();
-
       await new Promise((r) => setTimeout(r, 1500));
+      onComplete();
       setPhase("complete");
     };
 
