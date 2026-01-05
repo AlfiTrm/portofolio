@@ -77,17 +77,6 @@ export default function CustomCursor() {
 
   return (
     <>
-      <style jsx global>{`
-        @media (min-width: 768px) and (hover: hover) and (pointer: fine) {
-          body,
-          a,
-          button,
-          [role="button"] {
-            cursor: none !important;
-          }
-        }
-      `}</style>
-
       <div className="pointer-events-none fixed inset-0 z-[9999] hidden md:block">
         <div
           ref={dotRef}

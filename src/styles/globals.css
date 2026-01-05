@@ -177,3 +177,23 @@ html {
   }
 }
 
+/* Custom Cursor Logic */
+@media (min-width: 768px) and (hover: hover) and (pointer: fine) {
+  body,
+  a,
+  button,
+  [role="button"] {
+    cursor: none !important;
+  }
+}
+
+/* Tech Stack Scroll Animation */
+@keyframes techScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
