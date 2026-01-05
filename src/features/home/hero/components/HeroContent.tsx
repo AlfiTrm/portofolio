@@ -35,11 +35,10 @@ export default function HeroContent() {
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const },
+      transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] as const },
     },
   };
 
@@ -62,7 +61,7 @@ export default function HeroContent() {
         </motion.h1>
         <motion.div variants={itemVariants} className="mb-4">
           <div className="w-16 h-1 bg-white/20 mx-auto mb-4" />
-          <h2 className="text-xs sm:text-sm md:text-lg font-light text-white/50 uppercase tracking-[0.25em] sm:tracking-[0.3em] h-8">
+          <h2 className="text-xs sm:text-sm md:text-lg font-light text-white/50 uppercase tracking-[0.25em] sm:tracking-[0.3em] h-8 min-w-[280px] sm:min-w-[320px] md:min-w-[400px]">
             <ScrambleText
               text={currentRole}
               className="text-white/50"

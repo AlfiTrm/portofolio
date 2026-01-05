@@ -2,93 +2,146 @@
 
 import { useEffect, useRef, useState } from "react";
 
+type CursorMode = "default" | "hover" | "text";
+
 export default function CustomCursor() {
-  const dotRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [mode, setMode] = useState<CursorMode>("default");
+
+  const mouse = useRef({ x: -100, y: -100 });
+  const trailPos = useRef({ x: -100, y: -100 });
+  const vel = useRef({ x: 0, y: 0 });
+
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const trailRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
-  const [isHovering, setIsHovering] = useState(false);
-  const posRef = useRef({ x: -100, y: -100 });
-  const ringPosRef = useRef({ x: -100, y: -100 });
-  const rafRef = useRef<number | undefined>(undefined);
-  const isAnimatingRef = useRef(false);
 
   useEffect(() => {
-    const dot = dotRef.current;
-    const ring = ringRef.current;
-    if (!dot || !ring) return;
-
-    const lerp = (start: number, end: number, factor: number) =>
-      start + (end - start) * factor;
-
-    const animate = () => {
-      if (!isAnimatingRef.current) return;
-
-      ringPosRef.current.x = lerp(ringPosRef.current.x, posRef.current.x, 0.15);
-      ringPosRef.current.y = lerp(ringPosRef.current.y, posRef.current.y, 0.15);
-
-      dot.style.transform = `translate(${posRef.current.x - 4}px, ${
-        posRef.current.y - 4
-      }px)`;
-
-      ring.style.transform = `translate(${ringPosRef.current.x - 20}px, ${
-        ringPosRef.current.y - 20
-      }px) scale(${isHovering ? 1.3 : 1})`;
-
-      const dx = Math.abs(ringPosRef.current.x - posRef.current.x);
-      const dy = Math.abs(ringPosRef.current.y - posRef.current.y);
-
-      if (dx < 1 && dy < 1) {
-        isAnimatingRef.current = false;
-        return;
-      }
-
-      rafRef.current = requestAnimationFrame(animate);
-    };
-
-    const startAnimation = () => {
-      if (!isAnimatingRef.current) {
-        isAnimatingRef.current = true;
-        rafRef.current = requestAnimationFrame(animate);
-      }
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      posRef.current = { x: e.clientX, y: e.clientY };
-      startAnimation();
-    };
-
-    const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const interactive = target.closest(
-        "button, a, [role='button'], .cursor-pointer"
-      );
-      setIsHovering(!!interactive);
-    };
-
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    window.addEventListener("mouseover", handleMouseOver, { passive: true });
+    const style = document.createElement("style");
+    style.innerHTML = `*, *::before, *::after { cursor: none !important; }`;
+    style.id = "hide-cursor";
+    document.head.appendChild(style);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseover", handleMouseOver);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      isAnimatingRef.current = false;
+      document.getElementById("hide-cursor")?.remove();
     };
-  }, [isHovering]);
+  }, []);
+
+  useEffect(() => {
+    let rafId = 0;
+    const SPEED = 0.22;
+    const STRETCH = 0.3;
+
+    const animate = () => {
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate3d(${mouse.current.x}px, ${mouse.current.y}px, 0)`;
+      }
+
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate3d(${mouse.current.x}px, ${mouse.current.y}px, 0)`;
+      }
+
+      const dx = mouse.current.x - trailPos.current.x;
+      const dy = mouse.current.y - trailPos.current.y;
+
+      vel.current.x += (dx * SPEED - vel.current.x) * 0.5;
+      vel.current.y += (dy * SPEED - vel.current.y) * 0.5;
+
+      trailPos.current.x += vel.current.x;
+      trailPos.current.y += vel.current.y;
+
+      const speed = Math.sqrt(vel.current.x ** 2 + vel.current.y ** 2);
+      const angle = Math.atan2(vel.current.y, vel.current.x) * (180 / Math.PI);
+      const stretch = Math.min(speed * STRETCH, 0.5);
+
+      if (trailRef.current) {
+        trailRef.current.style.transform = `
+          translate3d(${trailPos.current.x}px, ${trailPos.current.y}px, 0)
+          rotate(${angle}deg)
+          scale(${1 + stretch}, ${1 - stretch * 0.4})
+        `;
+      }
+
+      if (!isVisible && mouse.current.x > 0) setIsVisible(true);
+
+      rafId = requestAnimationFrame(animate);
+    };
+
+    const onMove = (e: MouseEvent) => {
+      mouse.current = { x: e.clientX, y: e.clientY };
+    };
+
+    const onOver = (e: MouseEvent) => {
+      const t = e.target as HTMLElement;
+      const isLink = t.closest(
+        "a, button, [role='button'], .cursor-pointer, input"
+      );
+      const isText =
+        !isLink && t.closest("p, h1, h2, h3, h4, h5, h6, span, li");
+
+      if (isLink) setMode("hover");
+      else if (isText) setMode("text");
+      else setMode("default");
+    };
+
+    window.addEventListener("mousemove", onMove, { passive: true });
+    window.addEventListener("mouseover", onOver, { passive: true });
+    rafId = requestAnimationFrame(animate);
+
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseover", onOver);
+      cancelAnimationFrame(rafId);
+    };
+  }, [isVisible]);
 
   return (
     <>
-      <div className="pointer-events-none fixed inset-0 z-[9999] hidden md:block">
-        <div
-          ref={dotRef}
-          className="fixed top-0 left-0 w-2 h-2 bg-white rounded-full will-change-transform"
-        />
+      <svg className="absolute w-0 h-0">
+        <defs>
+          <filter id="goo">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
+            <feColorMatrix
+              in="blur"
+              mode="matrix"
+              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -12"
+            />
+          </filter>
+        </defs>
+      </svg>
+
+      <div
+        className={`pointer-events-none fixed inset-0 z-[9999] hidden md:block transition-opacity duration-300 ${
+          isVisible ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <div className="mix-blend-difference" style={{ filter: "url(#goo)" }}>
+          <div
+            ref={cursorRef}
+            className="absolute top-0 left-0 w-2 h-2 bg-white rounded-full -translate-x-1/2 -translate-y-1/2 will-change-transform"
+          />
+
+          <div
+            ref={trailRef}
+            className="absolute top-0 left-0 bg-white rounded-full -translate-x-1/2 -translate-y-1/2 will-change-transform"
+            style={{
+              width: mode === "text" ? 8 : 20,
+              height: mode === "text" ? 32 : 20,
+              borderRadius: mode === "text" ? 4 : "50%",
+              transition: "width 0.2s, height 0.2s, border-radius 0.2s",
+            }}
+          />
+        </div>
+
         <div
           ref={ringRef}
-          className="fixed top-0 left-0 w-10 h-10 border border-white/30 rounded-full will-change-transform transition-[border-color] duration-150"
+          className="absolute top-0 left-0 rounded-full border border-white/50 -translate-x-1/2 -translate-y-1/2 will-change-transform"
           style={{
-            borderColor: isHovering
-              ? "rgba(255,255,255,0.6)"
-              : "rgba(255,255,255,0.3)",
+            width: 48,
+            height: 48,
+            opacity: mode === "hover" ? 1 : 0,
+            transition:
+              "opacity 0.2s, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)",
           }}
         />
       </div>

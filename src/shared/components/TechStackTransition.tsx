@@ -91,6 +91,7 @@ export default function TechStackTransition() {
           style={{
             width: "max-content",
             animation: "techScroll 25s linear infinite",
+            willChange: "transform",
           }}
         >
           {quadStack.map((tech, index) => (

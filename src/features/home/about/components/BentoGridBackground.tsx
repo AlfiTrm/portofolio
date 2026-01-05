@@ -1,14 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export default function BentoGridBackground() {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [containerDimensions, setContainerDimensions] = useState({
-    width: 0,
-    height: 0,
-  });
   const containerRef = useRef<HTMLDivElement>(null);
+  const elementsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const rafRef = useRef<number>(0);
 
   const keywords = [
     { text: "Coffee Addict", size: "text-lg" },
@@ -16,7 +13,6 @@ export default function BentoGridBackground() {
     { text: "Born to Game", size: "text-base" },
     { text: "Spotify Enjoyer", size: "text-xs" },
     { text: "Code Enjoyer", size: "text-base" },
-
     { text: "Frontend Developer", size: "text-xl" },
     { text: "Future Fullstack", size: "text-lg" },
     { text: "Future Backend", size: "text-base" },
@@ -26,13 +22,11 @@ export default function BentoGridBackground() {
     { text: "Tailwind CSS", size: "text-xs" },
     { text: "JavaScript", size: "text-base" },
     { text: "Node.js", size: "text-sm" },
-
     { text: "UI/UX", size: "text-sm" },
     { text: "Clean Code", size: "text-base" },
     { text: "Responsive", size: "text-xs" },
     { text: "Git Master", size: "text-sm" },
     { text: "API Design", size: "text-xs" },
-
     { text: "Always Learning", size: "text-lg" },
     { text: "Build & Ship", size: "text-base" },
     { text: "User First", size: "text-sm" },
@@ -40,10 +34,6 @@ export default function BentoGridBackground() {
     { text: "Problem Solver", size: "text-base" },
     { text: "Passion Driven", size: "text-sm" },
     { text: "Detail Oriented", size: "text-xs" },
-    { text: "Fast Learner", size: "text-sm" },
-    { text: "Team Player", size: "text-xs" },
-    { text: "Open Source", size: "text-sm" },
-    { text: "Pixel Perfect", size: "text-xs" },
   ];
 
   const positions = [
@@ -67,7 +57,6 @@ export default function BentoGridBackground() {
     { top: "88%", left: "30%" },
     { top: "15%", left: "92%" },
     { top: "92%", left: "12%" },
-
     { top: "10%", left: "40%" },
     { top: "22%", left: "65%" },
     { top: "35%", left: "88%" },
@@ -81,81 +70,80 @@ export default function BentoGridBackground() {
   ];
 
   useEffect(() => {
-    const updateDimensions = () => {
-      if (containerRef.current) {
-        setContainerDimensions({
-          width: containerRef.current.offsetWidth,
-          height: containerRef.current.offsetHeight,
-        });
-      }
-    };
-
-    updateDimensions();
-    window.addEventListener("resize", updateDimensions);
+    const container = containerRef.current;
+    if (!container) return;
 
     const handleMouseMove = (e: MouseEvent) => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        setMousePos({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top,
+      if (rafRef.current) return;
+
+      rafRef.current = requestAnimationFrame(() => {
+        const rect = container.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        elementsRef.current.forEach((el) => {
+          if (!el) return;
+
+          const elRect = el.getBoundingClientRect();
+          const elX = elRect.left - rect.left + elRect.width / 2;
+          const elY = elRect.top - rect.top + elRect.height / 2;
+
+          const distance = Math.sqrt(
+            Math.pow(mouseX - elX, 2) + Math.pow(mouseY - elY, 2)
+          );
+
+          const maxDistance = 250;
+          const minOpacity = 0.05;
+          const maxOpacity = 0.35;
+
+          const opacity =
+            distance > maxDistance
+              ? minOpacity
+              : maxOpacity -
+                (distance / maxDistance) * (maxOpacity - minOpacity);
+
+          el.style.opacity = String(opacity);
         });
-      }
+
+        rafRef.current = 0;
+      });
     };
 
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener("mousemove", handleMouseMove);
-      return () => {
-        container.removeEventListener("mousemove", handleMouseMove);
-        window.removeEventListener("resize", updateDimensions);
-      };
-    }
+    const handleMouseLeave = () => {
+      elementsRef.current.forEach((el) => {
+        if (el) el.style.opacity = "0.05";
+      });
+    };
+
+    container.addEventListener("mousemove", handleMouseMove, { passive: true });
+    container.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+      container.removeEventListener("mousemove", handleMouseMove);
+      container.removeEventListener("mouseleave", handleMouseLeave);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, []);
-
-  const getOpacity = (elementX: number, elementY: number) => {
-    const distance = Math.sqrt(
-      Math.pow(mousePos.x - elementX, 2) + Math.pow(mousePos.y - elementY, 2)
-    );
-
-    const maxDistance = 300; 
-    const minOpacity = 0.05;
-    const maxOpacity = 0.35;
-
-    if (distance > maxDistance) return minOpacity;
-
-    const opacity =
-      maxOpacity - (distance / maxDistance) * (maxOpacity - minOpacity);
-    return opacity;
-  };
 
   return (
     <div ref={containerRef} className="absolute inset-0 overflow-hidden">
-      {keywords.map((keyword, index) => {
-        const topPercent = parseFloat(positions[index].top);
-        const leftPercent = parseFloat(positions[index].left);
-
-        return (
-          <div
-            key={index}
-            className={`absolute ${keyword.size} text-white whitespace-nowrap`}
-            style={{
-              top: positions[index].top,
-              left: positions[index].left,
-              opacity:
-                containerDimensions.width > 0
-                  ? getOpacity(
-                      (leftPercent / 100) * containerDimensions.width,
-                      (topPercent / 100) * containerDimensions.height
-                    )
-                  : 0.05,
-              transition: "opacity 0.5s ease-out",
-            }}
-          >
-            {keyword.text}
-          </div>
-        );
-      })}
+      {keywords.map((keyword, index) => (
+        <div
+          key={index}
+          ref={(el) => {
+            elementsRef.current[index] = el;
+          }}
+          className={`absolute ${keyword.size} text-white whitespace-nowrap`}
+          style={{
+            top: positions[index].top,
+            left: positions[index].left,
+            opacity: 0.05,
+            transition: "opacity 0.3s ease-out",
+          }}
+        >
+          {keyword.text}
+        </div>
+      ))}
     </div>
   );
 }
