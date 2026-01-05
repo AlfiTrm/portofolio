@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import { Menu, X, FileText } from "lucide-react";
-import ResumeModal from "./ResumeModal";
 
 const navItems = [
   { name: "Home", href: "#home" },
@@ -14,11 +13,14 @@ const navItems = [
   { name: "Contact", href: "#contact" },
 ];
 
-export default function Navbar() {
+interface NavbarProps {
+  onOpenResume?: () => void;
+}
+
+export default function Navbar({ onOpenResume }: NavbarProps) {
   const [activeItem, setActiveItem] = useState("Home");
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [resumeOpen, setResumeOpen] = useState(false);
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -30,6 +32,21 @@ export default function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
+
+      const sections = navItems.map((item) => item.href.substring(1));
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          if (rect.top <= 300 && rect.bottom >= 300) {
+            setActiveItem(
+              navItems.find((item) => item.href === `#${section}`)?.name ||
+                "Home"
+            );
+            break;
+          }
+        }
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -64,7 +81,7 @@ export default function Navbar() {
           stiffness: 100,
           damping: 20,
         }}
-        className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 px-4 pointer-events-none"
+        className="hidden md:flex fixed top-0 left-0 right-0 z-50 justify-center pt-6 px-4 pointer-events-none"
         role="navigation"
         aria-label="Main navigation"
       >
@@ -129,7 +146,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center pl-2">
             <div className="w-px h-5 bg-white/10 mx-2" />
             <button
-              onClick={() => setResumeOpen(true)}
+              onClick={() => onOpenResume?.()}
               className="px-5 py-2.5 rounded-full text-base font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all focus:outline-none focus:ring-2 focus:ring-cyan-400 flex items-center gap-2"
             >
               <FileText className="w-4 h-4" />
@@ -232,7 +249,7 @@ export default function Navbar() {
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
-                    setResumeOpen(true);
+                    onOpenResume?.();
                   }}
                   className="w-full py-4 text-xl font-bold tracking-wider rounded-2xl bg-white/5 border border-white/20 hover:bg-white/10 text-white transition-all active:scale-95 flex items-center justify-center gap-2"
                 >
@@ -244,8 +261,6 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
     </>
   );
 }

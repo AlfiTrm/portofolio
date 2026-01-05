@@ -12,47 +12,60 @@ interface ScrambleTextProps {
   scrambleOnHover?: boolean;
 }
 
+interface ScrambleState {
+  chars: string[];
+  revealIndex: number;
+}
+
 export default function ScrambleText({
   text,
   className = "",
   scrambleClassName = "text-cyan-400",
   scrambleOnHover = true,
 }: ScrambleTextProps) {
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const [scrambledText, setScrambledText] = useState(text.split(""));
-  const [revealIndex, setRevealIndex] = useState(text.length);
+  const rafRef = useRef<number | null>(null);
+  const startTimeRef = useRef<number>(0);
+
+  const [state, setState] = useState<ScrambleState>({
+    chars: text.split(""),
+    revealIndex: text.length,
+  });
 
   const scramble = useCallback(() => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    startTimeRef.current = 0;
 
-    let pos = 0;
+    const animate = (timestamp: number) => {
+      if (!startTimeRef.current) startTimeRef.current = timestamp;
+      const elapsed = timestamp - startTimeRef.current;
 
-    intervalRef.current = setInterval(() => {
-      const newText = text.split("").map((char, index) => {
-        if (index < pos) {
-          return text[index];
-        }
-        if (text[index] === " ") return "\u00A0";
+      const pos = elapsed / 125;
+
+      const newChars = text.split("").map((char, index) => {
+        if (index < pos) return text[index];
+        if (char === " ") return "\u00A0";
         return CHARS[Math.floor(Math.random() * CHARS.length)];
       });
 
-      setScrambledText(newText);
-      setRevealIndex(Math.floor(pos));
+      setState({
+        chars: newChars,
+        revealIndex: Math.floor(pos),
+      });
 
-      pos += 0.4;
-
-      if (pos >= text.length) {
-        if (intervalRef.current) clearInterval(intervalRef.current);
-        setScrambledText(text.split(""));
-        setRevealIndex(text.length);
+      if (pos < text.length) {
+        rafRef.current = requestAnimationFrame(animate);
+      } else {
+        setState({ chars: text.split(""), revealIndex: text.length });
       }
-    }, 50);
+    };
+
+    rafRef.current = requestAnimationFrame(animate);
   }, [text]);
 
   useEffect(() => {
     scramble();
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, [text, scramble]);
 
@@ -64,11 +77,11 @@ export default function ScrambleText({
     >
       <span className="sr-only">{text}</span>
       <span aria-hidden="true" className="inline-block">
-        {scrambledText.map((char, index) => (
+        {state.chars.map((char, index) => (
           <span
             key={index}
             className={`inline-block transition-colors duration-200 ${
-              index < revealIndex ? "" : `${scrambleClassName} font-mono`
+              index < state.revealIndex ? "" : `${scrambleClassName} font-mono`
             }`}
           >
             {char === " " ? "\u00A0" : char}

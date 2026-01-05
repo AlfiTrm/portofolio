@@ -18,7 +18,7 @@ export default function HeroContent() {
     const timer = setInterval(() => {
       index = (index + 1) % roles.length;
       setCurrentRole(roles[index]);
-    }, 4000);
+    }, 7000);
 
     return () => clearInterval(timer);
   }, []);
@@ -52,11 +52,11 @@ export default function HeroContent() {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="flex flex-col items-center max-w-4xl mx-auto text-center"
+        className="flex flex-col items-center max-w-4xl mx-auto text-center -translate-y-16 md:-translate-y-0"
       >
         <motion.h1
           variants={itemVariants}
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white leading-none tracking-tight mb-4 pt-16 md:pt-20"
+          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white leading-none tracking-tight mb-4 pt-6 md:pt-20"
         >
           <ScrambleText text="Alfi Tsani" scrambleOnHover={false} />
         </motion.h1>
@@ -65,15 +65,15 @@ export default function HeroContent() {
           <h2 className="text-xs sm:text-sm md:text-lg font-light text-white/50 uppercase tracking-[0.25em] sm:tracking-[0.3em] h-8">
             <ScrambleText
               text={currentRole}
-              className="text-white/70"
-              scrambleClassName="text-white/40"
+              className="text-white/50"
+              scrambleClassName="text-white/20"
             />
           </h2>
         </motion.div>
 
         <motion.div
           variants={itemVariants}
-          className="relative translate-y-16 md:translate-y-24"
+          className="relative translate-y-12 md:translate-y-12"
         >
           <HeroImage src="/hero/gambaralfi.webp" alt="Alfi Tsani" />
         </motion.div>

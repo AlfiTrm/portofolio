@@ -2,8 +2,11 @@
 
 import { useState, useCallback, useSyncExternalStore } from "react";
 import Navbar from "@/shared/components/Navbar";
+import MobileNavbar from "@/shared/components/MobileNavbar";
 import SmoothScroll from "@/shared/components/SmoothScroll";
 import Footer from "@/shared/components/Footer";
+import Spotlight from "@/shared/components/Spotlight";
+import ResumeModal from "@/shared/components/ResumeModal";
 import TechStackTransition from "@/shared/components/TechStackTransition";
 import HeroContent from "../components/HeroContent";
 import AboutSection from "@/features/home/about/containers/AboutSection";
@@ -38,6 +41,7 @@ function useIsFirstVisit() {
 export default function HomeScreen() {
   const isFirstVisit = useIsFirstVisit();
   const [isLoading, setIsLoading] = useState(true);
+  const [resumeOpen, setResumeOpen] = useState(false);
 
   const handleLoadComplete = useCallback(() => {
     if (isFirstVisit && typeof window !== "undefined") {
@@ -62,8 +66,10 @@ export default function HomeScreen() {
 
         <div className="relative">
           <div className="fixed inset-0 bg-grid opacity-20 pointer-events-none" />
+          <Spotlight />
 
-          <Navbar />
+          <Navbar onOpenResume={() => setResumeOpen(true)} />
+          <MobileNavbar onOpenResume={() => setResumeOpen(true)} />
 
           <main id="main-content">
             <HeroContent />
@@ -76,6 +82,7 @@ export default function HomeScreen() {
         </div>
 
         <Footer />
+        <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
       </div>
     </SmoothScroll>
   );

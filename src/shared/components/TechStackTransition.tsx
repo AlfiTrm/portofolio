@@ -71,8 +71,8 @@ export default function TechStackTransition() {
     <section className="relative py-24 my-20 overflow-hidden border-y border-white/5 translate-y-20">
       <div className="absolute inset-0 bg-white/[0.01]" />
 
-      <div className="absolute left-0 top-0 bottom-0 w-40 bg-gradient-to-r from-black via-black/90 to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-40 bg-gradient-to-l from-black via-black/90 to-transparent z-10 pointer-events-none" />
+      <div className="absolute left-0 top-0 bottom-0 w-12 md:w-40 bg-gradient-to-r from-black via-black/90 to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-12 md:w-40 bg-gradient-to-l from-black via-black/90 to-transparent z-10 pointer-events-none" />
 
       <div className="relative text-center mb-10">
         <motion.p

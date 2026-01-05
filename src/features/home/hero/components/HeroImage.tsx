@@ -23,14 +23,16 @@ export default function HeroImage({
 
   return (
     <div className={`relative ${className}`}>
-      <CurvedText text={techStackText} radius={260} duration={25} />
+      <div className="absolute inset-0 flex items-center justify-center scale-[0.85] xs:scale-[0.85] md:scale-[0.85] lg:scale-[0.9] opacity-60 md:opacity-100 origin-center transition-transform duration-500 pointer-events-none">
+        <CurvedText text={techStackText} radius={260} duration={25} />
+      </div>
 
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-[350px] h-[350px] bg-cyan-500/5 rounded-full blur-2xl" />
+        <div className="w-[280px] h-[280px] md:w-[500px] md:h-[500px] lg:w-[550px] lg:h-[550px] bg-cyan-500/5 rounded-full blur-2xl" />
       </div>
 
       <motion.div
-        className="relative w-[400px] h-[400px] md:w-[450px] md:h-[450px] mx-auto group"
+        className="relative w-[80vw] max-w-[450px] h-[80vw] max-h-[450px] md:w-[600px] md:h-[600px] lg:w-[650px] lg:h-[650px] mx-auto group"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}

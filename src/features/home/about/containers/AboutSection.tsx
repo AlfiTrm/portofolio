@@ -106,15 +106,15 @@ export default function AboutSection() {
               <motion.div
                 drag
                 dragConstraints={{
-                  top: -100,
-                  bottom: 100,
-                  left: -150,
-                  right: 150,
+                  top: -50,
+                  bottom: 50,
+                  left: -50,
+                  right: 50,
                 }}
-                dragElastic={0.2}
+                dragElastic={0.1}
                 dragTransition={{ bounceStiffness: 400, bounceDamping: 30 }}
                 style={{ x, y, rotate }}
-                className="relative cursor-grab active:cursor-grabbing z-20"
+                className="relative cursor-grab active:cursor-grabbing z-20 w-full max-w-[320px] mx-auto scale-85 md:scale-100 origin-center"
                 whileDrag={{ scale: 1.02 }}
               >
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
@@ -123,7 +123,7 @@ export default function AboutSection() {
                   </div>
                 </div>
 
-                <div className="relative w-80 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-2xl">
+                <div className="relative w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-2xl">
                   <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-white/40" />
