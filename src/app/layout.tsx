@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
+import { Climate_Crisis, Geist, Geist_Mono } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 import "../styles/globals.css";
+import PreloadShellDismiss from "@/shared/components/PreloadShellDismiss";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,6 +14,17 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const climateCrisis = Climate_Crisis({
+  variable: "--font-climate-crisis",
+  subsets: ["latin"],
+});
+
+const akiraExpanded = localFont({
+  src: "../../public/font/Akira Expanded Demo.otf",
+  variable: "--font-akira",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -85,8 +98,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        data-shell-ready="false"
+        className={`${geistSans.variable} ${geistMono.variable} ${climateCrisis.variable} ${akiraExpanded.variable} antialiased`}
       >
+        <div id="preload-shell" aria-hidden="true">
+          <div className="preload-shell__bars">
+            <span className="preload-shell__bar preload-shell__bar--1" />
+            <span className="preload-shell__bar preload-shell__bar--2" />
+            <span className="preload-shell__bar preload-shell__bar--3" />
+          </div>
+        </div>
+        <PreloadShellDismiss />
         <CustomCursor />
         <SpeedInsights />
         <Analytics />

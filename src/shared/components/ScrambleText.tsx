@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useRef, useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 
@@ -10,6 +11,7 @@ interface ScrambleTextProps {
   className?: string;
   scrambleClassName?: string;
   scrambleOnHover?: boolean;
+  style?: CSSProperties;
 }
 
 interface ScrambleState {
@@ -22,6 +24,7 @@ export default function ScrambleText({
   className = "",
   scrambleClassName = "text-cyan-400",
   scrambleOnHover = true,
+  style,
 }: ScrambleTextProps) {
   const rafRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
@@ -74,6 +77,7 @@ export default function ScrambleText({
       className={`inline-block whitespace-nowrap cursor-default relative overflow-hidden ${className}`}
       onMouseEnter={scrambleOnHover ? scramble : undefined}
       onClick={scramble}
+      style={style}
     >
       <span className="sr-only">{text}</span>
       <span aria-hidden="true" className="inline-block">

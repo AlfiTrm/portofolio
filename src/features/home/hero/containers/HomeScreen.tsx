@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useSyncExternalStore } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Navbar from "@/shared/components/Navbar";
 import MobileNavbar from "@/shared/components/MobileNavbar";
 import SmoothScroll from "@/shared/components/SmoothScroll";
@@ -15,56 +15,42 @@ import ProjectsSection from "@/features/home/projects/containers/ProjectsSection
 import ContactSection from "@/features/home/contact/containers/ContactSection";
 
 import EntranceLoader from "@/shared/components/EntranceLoader";
-import QuickLoader from "@/shared/components/QuickLoader";
-
-const VISITED_KEY = "portfolio_visited";
-
-const subscribe = () => () => {};
-
-const getSnapshot = () => {
-  if (typeof window === "undefined") return null;
-  return sessionStorage.getItem(VISITED_KEY);
-};
-
-const getServerSnapshot = () => null;
-
-function useIsFirstVisit() {
-  const visited = useSyncExternalStore(
-    subscribe,
-    getSnapshot,
-    getServerSnapshot
-  );
-
-  return visited === null;
-}
 
 export default function HomeScreen() {
-  const isFirstVisit = useIsFirstVisit();
   const [isLoading, setIsLoading] = useState(true);
   const [resumeOpen, setResumeOpen] = useState(false);
 
-  const handleLoadComplete = useCallback(() => {
-    if (isFirstVisit && typeof window !== "undefined") {
-      sessionStorage.setItem(VISITED_KEY, "true");
-    }
-    setIsLoading(false);
-  }, [isFirstVisit]);
+  useEffect(() => {
+    document.body.dataset.shellReady = "false";
+    document.body.style.overflow = "hidden";
+    window.scrollTo({ top: 0, behavior: "auto" });
 
-  if (isFirstVisit === null) {
-    return <div className="fixed inset-0 bg-black z-[100]" />;
-  }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = isLoading ? "hidden" : "";
+  }, [isLoading]);
+
+  const handleLoadComplete = useCallback(() => {
+    document.body.dataset.shellReady = "true";
+    document.body.style.overflow = "";
+    setIsLoading(false);
+  }, []);
 
   return (
     <SmoothScroll>
       <div className="relative min-h-screen bg-black overflow-hidden">
-        {isLoading &&
-          (isFirstVisit ? (
-            <EntranceLoader onComplete={handleLoadComplete} />
-          ) : (
-            <QuickLoader onComplete={handleLoadComplete} />
-          ))}
+        {isLoading && <EntranceLoader onComplete={handleLoadComplete} />}
 
-        <div className="relative">
+        <div
+          className={`relative transition-opacity duration-500 ${
+            isLoading ? "opacity-0" : "opacity-100"
+          }`}
+          aria-hidden={isLoading}
+        >
           <div className="fixed inset-0 bg-grid opacity-20 pointer-events-none" />
           <Spotlight />
 
@@ -81,7 +67,14 @@ export default function HomeScreen() {
           </main>
         </div>
 
-        <Footer />
+        <div
+          className={`transition-opacity duration-500 ${
+            isLoading ? "opacity-0" : "opacity-100"
+          }`}
+          aria-hidden={isLoading}
+        >
+          <Footer />
+        </div>
         <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
       </div>
     </SmoothScroll>

@@ -45,6 +45,7 @@ export default function HeroImage({
             src={src}
             alt={alt}
             fill
+            sizes="(max-width: 768px) 80vw, (max-width: 1200px) 600px, 650px"
             className="object-contain grayscale group-hover:grayscale-0 transition-all duration-700"
             priority
           />

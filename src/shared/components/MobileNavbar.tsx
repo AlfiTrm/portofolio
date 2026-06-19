@@ -1,53 +1,44 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { Home, User, Code, Briefcase, Mail, FileText } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface MobileNavbarProps {
   onOpenResume?: () => void;
 }
 
 const navItems = [
-  { name: "Home", href: "#home", icon: Home },
-  { name: "About", href: "#about", icon: User },
-  { name: "Skills", href: "#skills", icon: Code },
-  { name: "Projects", href: "#projects", icon: Briefcase },
-  { name: "Contact", href: "#contact", icon: Mail },
+  { name: "Home", label: "Home", href: "#home", group: "primary" },
+  { name: "About", label: "About", href: "#about", group: "primary" },
+  {
+    name: "Projects",
+    label: "Works",
+    href: "#projects",
+    group: "secondary",
+  },
+  {
+    name: "Skills",
+    label: "Capabilities",
+    href: "#skills",
+    group: "secondary",
+  },
+  { name: "Contact", label: "Contact", href: "#contact", group: "contact" },
 ];
 
 export default function MobileNavbar({ onOpenResume }: MobileNavbarProps) {
   const [activeTab, setActiveTab] = useState("Home");
-  const [translateY, setTranslateY] = useState(0);
-  const lastScrollY = useRef(0);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const isScrollingDown = currentScrollY > lastScrollY.current;
-      const diff = Math.abs(currentScrollY - lastScrollY.current);
-
-      if (isScrollingDown && diff > 5) {
-        setTranslateY(40);
-      } else if (!isScrollingDown && diff > 5) {
-        setTranslateY(0);
-      }
-
-      lastScrollY.current = currentScrollY;
-
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      timeoutRef.current = setTimeout(() => {
-        setTranslateY(0);
-      }, 500);
-
       const sections = navItems.map((item) => item.href.substring(1));
 
       for (const section of sections) {
         const element = document.getElementById(section);
         if (element) {
           const rect = element.getBoundingClientRect();
-          if (rect.top >= 0 && rect.top <= 300) {
+          if (rect.top <= 220 && rect.bottom >= 220) {
             setActiveTab(
               navItems.find((item) => item.href === `#${section}`)?.name ||
                 "Home"
@@ -58,68 +49,153 @@ export default function MobileNavbar({ onOpenResume }: MobileNavbarProps) {
       }
     };
 
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToSection = (href: string, name: string) => {
-    setActiveTab(name);
+  const scrollToSection = (href: string) => {
+    setMenuOpen(false);
+
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
   };
 
+  const navPrimary = navItems.filter((item) => item.group === "primary");
+  const navSecondary = navItems.filter((item) => item.group === "secondary");
+  const navContact = navItems.filter((item) => item.group === "contact");
+
   return (
     <>
-      <motion.button
-        onClick={() => onOpenResume?.()}
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className="md:hidden fixed top-4 right-4 z-50 p-3 bg-white text-black rounded-full shadow-lg border border-white/20 active:scale-95 transition-transform"
-        aria-label="View Resume"
+      <motion.nav
+        initial={{ y: -18, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        className="md:hidden fixed top-0 left-0 right-0 z-50 px-5 pt-5"
       >
-        <FileText className="w-5 h-5" />
-      </motion.button>
+        <div className="flex items-start justify-between">
+          <Link
+            href="/"
+            className="text-[1.35rem] leading-none tracking-[0.02em] text-[#f2ede6] [font-family:var(--font-akira)]"
+            aria-label="Tsan - Home"
+          >
+            Tsan
+          </Link>
 
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 overflow-hidden pointer-events-none">
-        <motion.nav
-          animate={{ y: translateY }}
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl px-2 py-3 flex justify-between items-center pointer-events-auto"
-        >
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.name;
+          <button
+            onClick={() => setMenuOpen(true)}
+            className="pt-1 uppercase text-[0.68rem] tracking-[0.26em] text-white/48 hover:text-white/76 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            aria-label="Open navigation menu"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-editorial-menu"
+          >
+            Menu
+          </button>
+        </div>
+      </motion.nav>
 
-            return (
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="md:hidden fixed inset-0 z-[60] bg-black/88 backdrop-blur-xl px-5 pt-5 pb-10"
+          >
+            <div className="flex items-start justify-between">
+              <span className="text-[1.35rem] leading-none tracking-[0.02em] text-[#f2ede6] [font-family:var(--font-akira)]">
+                Tsan
+              </span>
               <button
-                key={item.name}
-                onClick={() => scrollToSection(item.href, item.name)}
-                className="relative flex-1 flex flex-col items-center gap-1 min-w-0 py-2"
+                onClick={() => setMenuOpen(false)}
+                className="pt-1 uppercase text-[0.68rem] tracking-[0.26em] text-white/48 hover:text-white/76 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                aria-label="Close navigation menu"
               >
-                {isActive && (
-                  <motion.div
-                    layoutId="mobile-nav-pill"
-                    className="absolute inset-1 bg-white/10 rounded-xl"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
-
-                <div
-                  className={`relative z-10 transition-colors duration-200 ${
-                    isActive ? "text-white" : "text-neutral-500"
-                  }`}
-                >
-                  <Icon className="w-6 h-6" strokeWidth={isActive ? 2.5 : 2} />
-                </div>
+                Close
               </button>
-            );
-          })}
-        </motion.nav>
+            </div>
+
+            <motion.div
+              id="mobile-editorial-menu"
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 14 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-24 flex flex-col gap-16"
+            >
+              <div className="flex flex-col gap-8">
+                {navPrimary.map((item) => {
+                  const isActive = activeTab === item.name;
+
+                  return (
+                    <button
+                      key={item.name}
+                      onClick={() => scrollToSection(item.href)}
+                      className={`text-left uppercase text-[0.82rem] transition-all duration-300 ${
+                        isActive
+                          ? "text-[#f2ede6] tracking-[0.18em] font-medium"
+                          : "text-white/46 tracking-[0.24em] hover:text-white/76"
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="flex flex-col gap-6">
+                {navSecondary.map((item) => {
+                  const isActive = activeTab === item.name;
+
+                  return (
+                    <button
+                      key={item.name}
+                      onClick={() => scrollToSection(item.href)}
+                      className={`text-left uppercase text-[0.72rem] transition-all duration-300 ${
+                        isActive
+                          ? "text-[#f2ede6] tracking-[0.18em] font-medium"
+                          : "text-white/46 tracking-[0.24em] hover:text-white/76"
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="flex flex-col gap-6">
+                {navContact.map((item) => {
+                  const isActive = activeTab === item.name;
+
+                  return (
+                    <button
+                      key={item.name}
+                      onClick={() => scrollToSection(item.href)}
+                      className={`text-left uppercase text-[0.72rem] transition-all duration-300 ${
+                        isActive
+                          ? "text-[#f2ede6] tracking-[0.18em] font-medium"
+                          : "text-white/46 tracking-[0.24em] hover:text-white/76"
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="md:hidden fixed bottom-5 right-5 z-[61]">
+        <button
+          onClick={() => onOpenResume?.()}
+          className="uppercase text-[0.68rem] tracking-[0.24em] text-white/46 hover:text-white/78 transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+        >
+          Resume
+        </button>
       </div>
     </>
   );
