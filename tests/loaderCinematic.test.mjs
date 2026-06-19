@@ -66,7 +66,8 @@ test("home screen always replays entrance loading and locks scroll while loading
   assert.equal(homeScreen.includes("sessionStorage"), false);
   assert.equal(homeScreen.includes("QuickLoader"), false);
   assert.equal(homeScreen.includes("EntranceLoader"), true);
-  assert.equal(homeScreen.includes('window.scrollTo({ top: 0, behavior: "auto" })'), true);
+  assert.equal(homeScreen.includes("scrollRestoration"), true);
+  assert.equal(homeScreen.includes("window.scrollTo({ top: 0, behavior: \"auto\" })"), false);
   assert.equal(homeScreen.includes('document.body.style.overflow = "hidden"'), true);
   assert.equal(homeScreen.includes('document.body.style.overflow = ""'), true);
 });

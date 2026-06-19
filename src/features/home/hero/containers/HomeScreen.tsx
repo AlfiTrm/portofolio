@@ -27,7 +27,9 @@ export default function HomeScreen() {
   useEffect(() => {
     document.body.dataset.shellReady = "false";
     document.body.style.overflow = "hidden";
-    window.scrollTo({ top: 0, behavior: "auto" });
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "auto";
+    }
 
     return () => {
       document.body.style.overflow = "";
@@ -71,8 +73,8 @@ export default function HomeScreen() {
               onOpenResume={() => setResumeOpen(true)}
               isActive={heroReady}
             />
-            <AboutSection />
             <TechStackTransition />
+            <AboutSection />
             <SkillsSection />
             <ProjectsSection />
             <ContactSection />

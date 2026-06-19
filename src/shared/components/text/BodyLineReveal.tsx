@@ -8,6 +8,7 @@ interface BodyLineRevealProps {
   delay?: number;
   lineClassName?: string;
   isActive?: boolean;
+  skipAnimation?: boolean;
 }
 
 export default function BodyLineReveal({
@@ -16,11 +17,12 @@ export default function BodyLineReveal({
   delay = 0,
   lineClassName = "",
   isActive = true,
+  skipAnimation = false,
 }: BodyLineRevealProps) {
   return (
     <motion.div
       className={className}
-      initial="hidden"
+      initial={skipAnimation ? false : "hidden"}
       animate={isActive ? "visible" : "hidden"}
       variants={{
         hidden: {},

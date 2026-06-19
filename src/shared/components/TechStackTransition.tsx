@@ -1,13 +1,26 @@
 "use client";
 
-import { motion } from "framer-motion";
+import {
+  motion,
+  useAnimationFrame,
+  useMotionValue,
+  useSpring,
+} from "framer-motion";
 import { techStack } from "@/features/home/hero/data/techStack";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import useShouldSkipInitialEntrance from "@/shared/hooks/useShouldSkipInitialEntrance";
 import {
   SiNextdotjs,
   SiTypescript,
   SiJavascript,
   SiTailwindcss,
+  SiFigma,
+  SiGithub,
+  SiVercel,
+  SiHtml5,
+  SiCss3,
+  SiSupabase,
+  SiLaravel,
 } from "react-icons/si";
 import { FaReact } from "react-icons/fa";
 
@@ -41,68 +54,150 @@ const TechIcon = ({ name }: { name: string }) => {
       hoverColor: "#06B6D4",
       icon: <SiTailwindcss className="w-10 h-10" />,
     },
+    figma: {
+      color: "#F24E1E",
+      hoverColor: "#F24E1E",
+      icon: <SiFigma className="w-10 h-10" />,
+    },
+    github: {
+      color: "#FFFFFF",
+      hoverColor: "#FFFFFF",
+      icon: <SiGithub className="w-10 h-10" />,
+    },
+    vercel: {
+      color: "#FFFFFF",
+      hoverColor: "#FFFFFF",
+      icon: <SiVercel className="w-10 h-10" />,
+    },
+    html: {
+      color: "#E34F26",
+      hoverColor: "#E34F26",
+      icon: <SiHtml5 className="w-10 h-10" />,
+    },
+    css: {
+      color: "#1572B6",
+      hoverColor: "#1572B6",
+      icon: <SiCss3 className="w-10 h-10" />,
+    },
+    supabase: {
+      color: "#3ECF8E",
+      hoverColor: "#3ECF8E",
+      icon: <SiSupabase className="w-10 h-10" />,
+    },
+    laravel: {
+      color: "#FF2D20",
+      hoverColor: "#FF2D20",
+      icon: <SiLaravel className="w-10 h-10" />,
+    },
   };
 
   const config = configs[name] || configs.nextjs;
 
   return (
-    <div className="relative w-20 h-20 flex items-center justify-center rounded-xl group overflow-hidden bg-white/[0.03] border border-white/5 hover:scale-105 hover:border-white/20 transition-all duration-300">
+    <div className="relative w-20 h-20 flex items-center justify-center rounded-xl group overflow-hidden  hover:scale-105 transition-all duration-300">
       <div
         className="relative z-10 text-white/20 group-hover:text-[var(--hover-color)] transition-colors duration-300"
         style={{ "--hover-color": config.color } as React.CSSProperties}
       >
         {config.icon}
-      </div>
-
-      <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-        style={{
-          boxShadow: `inset 0 0 20px ${config.color}20`,
-        }}
-      />
+      </div>  
     </div>
   );
 };
 
 export default function TechStackTransition() {
-  const quadStack = [...techStack, ...techStack, ...techStack, ...techStack];
+  const [isHovered, setIsHovered] = useState(false);
+  const shouldSkipEntrance = useShouldSkipInitialEntrance();
+  const x = useMotionValue(0);
+  const targetSpeed = useMotionValue(84);
+  const smoothSpeed = useSpring(targetSpeed, {
+    stiffness: 120,
+    damping: 28,
+    mass: 0.9,
+  });
+  const laneRef = useRef<HTMLDivElement>(null);
+  const loopWidthRef = useRef(0);
+  const marqueeStack = [
+    ...techStack,
+    { name: "Figma", icon: "figma", category: "design" },
+    { name: "GitHub", icon: "github", category: "platform" },
+    { name: "Vercel", icon: "vercel", category: "deployment" },
+    { name: "HTML", icon: "html", category: "markup" },
+    { name: "CSS", icon: "css", category: "styling" },
+    { name: "Supabase", icon: "supabase", category: "backend" },
+    { name: "Laravel", icon: "laravel", category: "backend" },
+  ];
+  const doubledStack = [...marqueeStack, ...marqueeStack];
+
+  useEffect(() => {
+    targetSpeed.set(isHovered ? 0 : 84);
+  }, [isHovered, targetSpeed]);
+
+  useEffect(() => {
+    const measure = () => {
+      if (!laneRef.current) return;
+      loopWidthRef.current = laneRef.current.scrollWidth / 2;
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    if (laneRef.current) observer.observe(laneRef.current);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useAnimationFrame((_, delta) => {
+    const loopWidth = loopWidthRef.current;
+    if (!loopWidth) return;
+
+    const distance = (smoothSpeed.get() * delta) / 1000;
+    let nextX = x.get() - distance;
+
+    if (nextX <= -loopWidth) {
+      nextX += loopWidth;
+    }
+
+    x.set(nextX);
+  });
 
   return (
-    <section className="relative py-24 my-20 overflow-hidden border-y border-white/5 translate-y-20">
-      <div className="absolute inset-0 bg-white/[0.01]" />
+    <section className="relative overflow-hidden border-y border-white/5">
+      <div className="absolute inset-0 bg-black" />
+      <div className="pointer-events-none absolute inset-x-[14%] top-0 h-full bg-[radial-gradient(circle_at_50%_0%,rgba(244,238,220,0.12),rgba(244,238,220,0.03)_32%,transparent_72%)] blur-3xl" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(240,231,212,0.28),transparent)]" />
 
-      <div className="absolute left-0 top-0 bottom-0 w-12 md:w-40 bg-gradient-to-r from-black via-black/90 to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-12 md:w-40 bg-gradient-to-l from-black via-black/90 to-transparent z-10 pointer-events-none" />
-
-      <div className="relative text-center mb-10">
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-white/15 text-xs uppercase tracking-[0.4em] font-light"
+      <div
+        className="relative overflow-hidden"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <motion.div
+          ref={laneRef}
+          className="flex items-center gap-20"
+          style={{ x, width: "max-content", willChange: "transform" }}
         >
-          Tech Stack
-        </motion.p>
-      </div>
-
-      <div className="relative overflow-hidden">
-        <div
-          className="flex gap-20 items-center"
-          style={{
-            width: "max-content",
-            animation: "techScroll 25s linear infinite",
-            willChange: "transform",
-          }}
-        >
-          {quadStack.map((tech, index) => (
-            <div key={`${tech.name}-${index}`} className="flex-shrink-0">
+          {doubledStack.map((tech, index) => (
+            <motion.div
+              key={`${tech.name}-${index}`}
+              className="flex-shrink-0"
+              initial={
+                shouldSkipEntrance ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }
+              }
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-10% 0px" }}
+              transition={{
+                delay: shouldSkipEntrance
+                  ? 0
+                  : (index % marqueeStack.length) * 0.045,
+                duration: 0.78,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
               <TechIcon name={tech.icon} />
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
-
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
     </section>
   );
 }

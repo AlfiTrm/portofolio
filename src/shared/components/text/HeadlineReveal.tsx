@@ -7,6 +7,7 @@ interface HeadlineRevealProps {
   className?: string;
   delay?: number;
   isActive?: boolean;
+  skipAnimation?: boolean;
 }
 
 export default function HeadlineReveal({
@@ -14,13 +15,14 @@ export default function HeadlineReveal({
   className = "",
   delay = 0,
   isActive = true,
+  skipAnimation = false,
 }: HeadlineRevealProps) {
   const letters = Array.from(text);
 
   return (
     <motion.span
       className={`inline-flex overflow-hidden ${className}`}
-      initial="hidden"
+      initial={skipAnimation ? false : "hidden"}
       animate={isActive ? "visible" : "hidden"}
       variants={{
         hidden: {},

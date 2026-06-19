@@ -74,7 +74,7 @@ export default function HeroContent({
             transition={{ delay: heroEntranceTiming.contentDelay }}
             className="self-center md:self-start md:pt-[26vh]"
           >
-            <p className="text-center text-[2.85rem] leading-[0.92] tracking-[-0.02em] text-[#f0e7d4] sm:text-[3.8rem] md:text-left md:text-[4.8rem] lg:text-[5.5rem] [font-family:var(--font-akira)]">
+            <p className="text-center text-[2.85rem] leading-[0.92] tracking-[-0.02em] text-[#f0e7d4] sm:text-[3.8rem] md:text-left md:text-[5rem] lg:text-[7rem] [font-family:var(--font-akira)]">
               <HeadlineReveal
                 text="port"
                 delay={heroEntranceTiming.contentDelay + 0.04}
@@ -102,7 +102,7 @@ export default function HeroContent({
             transition={{ delay: heroEntranceTiming.contentDelay + 0.08 }}
             className="self-center md:self-end md:pb-[19vh]"
           >
-            <p className="text-center text-[2.85rem] leading-[0.92] tracking-[-0.02em] text-[#f0e7d4] sm:text-[3.8rem] md:text-right md:text-[4.8rem] lg:text-[5.5rem] [font-family:var(--font-akira)]">
+            <p className="text-center text-[2.85rem] leading-[0.92] tracking-[-0.02em] text-[#f0e7d4] sm:text-[3.8rem] md:text-right md:text-[5rem] lg:text-[7rem] [font-family:var(--font-akira)]">
               <HeadlineReveal
                 text="folio"
                 delay={heroEntranceTiming.contentDelay + 0.18}
