@@ -20,6 +20,7 @@ import EntranceLoader from "@/shared/components/EntranceLoader";
 
 export default function HomeScreen() {
   const [isLoading, setIsLoading] = useState(true);
+  const [heroReady, setHeroReady] = useState(false);
   const [resumeOpen, setResumeOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
 
@@ -41,6 +42,11 @@ export default function HomeScreen() {
     document.body.dataset.shellReady = "true";
     document.body.style.overflow = "";
     setIsLoading(false);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setHeroReady(true);
+      });
+    });
   }, []);
 
   return (
@@ -61,9 +67,12 @@ export default function HomeScreen() {
           <MobileNavbar onOpenResume={() => setResumeOpen(true)} />
 
           <main id="main-content">
-            <HeroContent onOpenResume={() => setResumeOpen(true)} />
-            <TechStackTransition />
+            <HeroContent
+              onOpenResume={() => setResumeOpen(true)}
+              isActive={heroReady}
+            />
             <AboutSection />
+            <TechStackTransition />
             <SkillsSection />
             <ProjectsSection />
             <ContactSection />

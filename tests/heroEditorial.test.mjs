@@ -38,7 +38,8 @@ test("home screen no longer renders gamey hero companions", () => {
   const source = read("src/features/home/hero/containers/HomeScreen.tsx");
 
   assert.equal(source.includes("PixelCharacter"), false);
-  assert.equal(source.includes("<HeroContent onOpenResume"), true);
+  assert.equal(source.includes("<HeroContent"), true);
+  assert.equal(source.includes("isActive={heroReady}"), true);
   assert.equal(source.includes("ask"), true);
   assert.equal(source.includes("iconoir:spark-solid"), true);
   assert.equal(source.includes("FloatingChatSheet"), true);

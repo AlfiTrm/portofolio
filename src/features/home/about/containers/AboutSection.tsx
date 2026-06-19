@@ -1,207 +1,144 @@
 "use client";
 
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import ScrollReveal from "@/shared/components/ScrollReveal";
+import { techStack } from "@/features/home/hero/data/techStack";
 import { aboutData } from "../data/aboutData";
-import { Coffee, Gamepad2, Moon, Headphones } from "lucide-react";
-import ScrollRevealText from "../components/ScrollRevealText";
-import BentoGridBackground from "../components/BentoGridBackground";
 import ExperienceTimeline from "../components/ExperienceTimeline";
 import "../styles/about.css";
 
+const tiltSpring = {
+  stiffness: 120,
+  damping: 18,
+  mass: 0.4,
+};
+
+const techLogos: Record<string, string> = {
+  nextjs: "N",
+  typescript: "TS",
+  react: "R",
+  javascript: "JS",
+  tailwind: "TW",
+};
+
 export default function AboutSection() {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotate = useTransform([x, y], ([latestX, latestY]) => {
-    return (latestX as number) * 0.05 + (latestY as number) * 0.02;
-  });
+  const pointerX = useMotionValue(0);
+  const pointerY = useMotionValue(0);
+  const smoothX = useSpring(pointerX, tiltSpring);
+  const smoothY = useSpring(pointerY, tiltSpring);
+  const rotateX = useTransform(smoothY, [-40, 40], [6, -6]);
+  const rotateY = useTransform(smoothX, [-40, 40], [-7, 7]);
 
-  const [cardPos, setCardPos] = useState({ x: 0, y: 0 });
+  const introParagraphs = aboutData.description.split("\n\n");
 
-  useEffect(() => {
-    const unsubscribeX = x.on("change", (latest) => {
-      setCardPos((prev) => ({ ...prev, x: latest }));
-    });
-    const unsubscribeY = y.on("change", (latest) => {
-      setCardPos((prev) => ({ ...prev, y: latest }));
-    });
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const relativeX = event.clientX - rect.left - rect.width / 2;
+    const relativeY = event.clientY - rect.top - rect.height / 2;
+    pointerX.set(relativeX / 8);
+    pointerY.set(relativeY / 8);
+  };
 
-    return () => {
-      unsubscribeX();
-      unsubscribeY();
-    };
-  }, [x, y]);
-
-  const anchorX = 0;
-  const anchorY = 0;
-
-  const holeX = cardPos.x;
-  const holeY = 131 + cardPos.y;
-
-  const controlX = (anchorX + holeX) / 2;
-  const controlY = (anchorY + holeY) / 2 + Math.abs(holeX) * 0.15 + 20;
+  const handlePointerLeave = () => {
+    pointerX.set(0);
+    pointerY.set(0);
+  };
 
   return (
-    <section id="about" className="relative py-32 px-4 md:px-8 overflow-hidden">
-      <div className="absolute top-1/2 left-0 w-96 h-96 bg-white/[0.02] rounded-full blur-3xl -translate-y-1/2" />
+    <section
+      id="about"
+      className="relative overflow-hidden pb-28 md:pb-28"
+    >
 
-      <div className="relative z-10 max-w-7xl mx-auto">
-        <ScrollReveal className="text-center mb-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full text-white/40 text-sm mb-6"
-          >
-            <span className="w-2 h-2 rounded-full bg-white/40" />
-            {aboutData.subtitle}
-          </motion.div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white">
-            About <span className="text-gradient">Me</span>
-          </h2>
-        </ScrollReveal>
+      <div className="relative z-10 w-full mx-auto max-w-[1490px]">
+        <div className="border border-white/8">
+          <div className="grid gap-4 lg:grid-cols-[1.6fr_0.9fr]">
+            <motion.article
+              onPointerMove={handlePointerMove}
+              onPointerLeave={handlePointerLeave}
+              style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+              className="relative min-h-[36rem] overflow-hidden border border-white/8 bg-[#0c0c0c] p-6 md:p-8"
+            >
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_22%,rgba(255,255,255,0)_58%)]" />
 
-        <div className="max-w-5xl mx-auto">
-          <ScrollReveal delay={0.2}>
-            <div className="flex flex-col items-center mb-20 relative h-[600px]">
-              <BentoGridBackground />
-
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-4 bg-white/20 border-2 border-white/30 rounded-full z-30 shadow-lg" />
-
-              <svg
-                className="absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none"
-                style={{
-                  width: "600px",
-                  height: "600px",
-                  overflow: "visible",
-                }}
-              >
-                <path
-                  d={`M 300 2 Q ${300 + controlX} ${controlY} ${
-                    300 + holeX
-                  } ${holeY}`}
-                  stroke="rgba(255, 255, 255, 0.35)"
-                  strokeWidth="3"
-                  fill="none"
-                  strokeLinecap="round"
-                  style={{
-                    filter: "drop-shadow(0 0 4px rgba(255,255,255,0.2))",
-                  }}
-                />
-                <path
-                  d={`M 300 2 Q ${300 + controlX} ${controlY} ${
-                    300 + holeX
-                  } ${holeY}`}
-                  stroke="rgba(255, 255, 255, 0.15)"
-                  strokeWidth="5"
-                  fill="none"
-                  strokeLinecap="round"
-                  style={{ filter: "blur(2px)" }}
-                />
-              </svg>
-
-              <div className="h-32" />
-
-              <motion.div
-                drag
-                dragConstraints={{
-                  top: -50,
-                  bottom: 50,
-                  left: -50,
-                  right: 50,
-                }}
-                dragElastic={0.1}
-                dragTransition={{ bounceStiffness: 400, bounceDamping: 30 }}
-                style={{ x, y, rotate }}
-                className="relative cursor-grab active:cursor-grabbing z-20 w-full max-w-[320px] mx-auto scale-85 md:scale-100 origin-center"
-                whileDrag={{ scale: 1.02 }}
-              >
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
-                  <div className="w-12 h-8 bg-white/10 border-2 border-white/20 rounded-lg flex items-center justify-center shadow-xl backdrop-blur-sm">
-                    <div className="w-4 h-4 rounded-full border-2 border-white/30 bg-black/80" />
-                  </div>
-                </div>
-
-                <div className="relative w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-2xl">
-                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-white/40" />
-                      <span className="text-white/30 text-xs uppercase tracking-widest font-light">
-                        Developer ID
-                      </span>
-                    </div>
-                    <span className="text-white/20 text-xs font-mono">
-                      #CAFE
-                    </span>
-                  </div>
-
-                  <div className="relative w-full aspect-square mb-4 rounded-xl overflow-hidden border border-white/10 bg-white/5">
+              <div className="relative z-10 flex h-full flex-col justify-end gap-10">
+                <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-center">
+                  <div className="relative mt-2 w-full max-w-[34rem]">
+                    <div className="absolute inset-x-[10%] top-[10%] h-[72%] bg-white/[0.05] blur-3xl" />
                     <Image
-                      src="/hero/gambaralfi.webp"
-                      alt="Alfi Tsani"
-                      fill
-                      className="object-cover grayscale"
+                      src="/about/cartoon-chill.svg"
+                      alt="Cartoon chill portrait"
+                      width={720}
+                      height={720}
+                      className="relative z-10 mx-auto h-auto w-full max-w-[31rem] object-contain md:max-w-[34rem]"
                       priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                  </div>
-
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center gap-3">
-                      <h3 className="text-2xl font-bold text-white">
-                        Alfi Tsani
-                      </h3>
-                      <div className="flex items-center gap-1.5">
-                        <Coffee className="w-4 h-4 text-white/30" />
-                        <Gamepad2 className="w-4 h-4 text-white/30" />
-                        <Moon className="w-4 h-4 text-white/30" />
-                        <Headphones className="w-4 h-4 text-white/30" />
-                      </div>
-                    </div>
-                    <p className="text-white/40 text-sm uppercase tracking-wider font-light">
-                      Frontend Developer
-                    </p>
-                  </div>
-
-                  <div className="flex gap-[2px] h-8 items-end opacity-30">
-                    {[
-                      4, 8, 6, 9, 3, 7, 5, 8, 4, 9, 6, 3, 7, 5, 8, 4, 6, 9, 5,
-                      7,
-                    ].map((height, i) => (
-                      <div
-                        key={i}
-                        className="flex-1 bg-white/40 rounded-sm"
-                        style={{ height: `${height * 10}%` }}
-                      />
-                    ))}
                   </div>
                 </div>
 
-                <motion.div
-                  initial={{ opacity: 1 }}
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-white/20 text-xs uppercase tracking-widest whitespace-nowrap"
-                >
-                  Drag me around
-                </motion.div>
-              </motion.div>
+                <div className="relative z-10 max-w-[26rem] pt-[22rem] md:pt-[26rem]">
+                  <div className="max-w-[16rem] md:max-w-[20rem]">
+                    <p className="text-[1.15rem] leading-[1.2] text-[#f0e7d4] md:text-[1.5rem]">
+                      hi, i&apos;m
+                    </p>
+                    <h2 className="mt-2 ml-8 text-3xl leading-[0.95] text-[#f0e7d4] md:ml-12 md:text-5xl">
+                      Alfi Tsani
+                    </h2>
+                  </div>
+                  <p className="mt-6 max-w-[22rem] text-[0.96rem] leading-[1.75] text-white/62 md:ml-16 md:text-[1rem]">
+                    {introParagraphs[0]}
+                  </p>
+                  <p className="mt-4 max-w-[19rem] text-[0.86rem] leading-[1.7] text-white/40 md:ml-8">
+                    {introParagraphs[1]}
+                  </p>
+                </div>
+
+              </div>
+            </motion.article>
+
+            <div className="grid gap-4 lg:grid-rows-[0.9fr_1.1fr]">
+              <article className="min-h-[14rem] border border-white/8 bg-[#0c0c0c] p-5 md:p-6">
+                <p className="mb-4 text-[0.66rem] uppercase tracking-[0.24em] text-white/34">
+                  quick notes
+                </p>
+                <div className="space-y-3 text-[0.94rem] leading-[1.65] text-white/58">
+                  <p>based in malang, building on the frontend.</p>
+                  <p>drawn to quiet interfaces, motion, and strong visual rhythm.</p>
+                  <p>currently powered by coffee and questionable sleep.</p>
+                </div>
+              </article>
+
+              <article className="min-h-[18rem] border border-white/8 bg-[#0c0c0c] p-5 md:p-6">
+                <p className="mb-5 text-[0.66rem] uppercase tracking-[0.24em] text-white/34">
+                  tech stack
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  {techStack.map((tech) => (
+                    <div
+                      key={tech.name}
+                      className="keycap border border-white/10 bg-white/[0.03] px-4 py-4"
+                    >
+                      <span className="mb-3 block text-[0.72rem] text-white/30">
+                        {techLogos[tech.icon] ?? tech.name.slice(0, 2)}
+                      </span>
+                      <span className="block text-[0.9rem] text-[#f0e7d4]/88">
+                        {tech.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </article>
             </div>
-          </ScrollReveal>
+          </div>
+        </div>
 
-          <ScrollReveal className="max-w-3xl mx-auto text-center" delay={0.3}>
-            <h3 className="text-2xl font-semibold text-white mb-8">My Story</h3>
-            <ScrollRevealText
-              paragraphs={aboutData.description.split("\n\n")}
-            />
-          </ScrollReveal>
-
+        <div className="mt-16">
           <ExperienceTimeline />
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 section-divider" />
+      <div className="section-divider absolute bottom-0 left-0 right-0" />
     </section>
   );
 }
