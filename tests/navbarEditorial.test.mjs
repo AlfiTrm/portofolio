@@ -18,7 +18,7 @@ test("desktop navbar uses editorial split layout and Tsan wordmark", () => {
   assert.equal(source.includes("navSecondary"), true);
   assert.equal(source.includes("navContact"), true);
   assert.equal(source.includes("flex-col"), true);
-  assert.equal(source.includes("fixed bottom-6 right-6"), true);
+  assert.equal(source.includes("fixed bottom-6 right-6"), false);
   assert.equal(source.includes('label: "Works"'), true);
   assert.equal(source.includes('name: "About"'), true);
   assert.equal(source.includes("var(--font-akira)"), true);
@@ -46,7 +46,7 @@ test("mobile navbar no longer uses bottom dock navigation", () => {
   assert.equal(source.includes("fixed bottom-0"), false);
   assert.equal(source.includes("Tsan"), true);
   assert.equal(source.includes("rounded-2xl"), false);
-  assert.equal(source.includes("fixed bottom-5 right-5"), true);
+  assert.equal(source.includes("fixed bottom-5 right-5"), false);
 });
 
 test("mobile navbar active state follows in-view section instead of click target", () => {

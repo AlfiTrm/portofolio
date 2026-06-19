@@ -2,8 +2,6 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import CurvedText from "./CurvedText";
-import { techStack } from "../data/techStack";
 
 interface HeroImageProps {
   src: string;
@@ -16,42 +14,32 @@ export default function HeroImage({
   alt,
   className = "",
 }: HeroImageProps) {
-  const techStackText = techStack
-    .map((tech) => tech.name)
-    .join(" </> ")
-    .repeat(2);
-
   return (
-    <div className={`relative ${className}`}>
-      <div className="absolute inset-0 flex items-center justify-center scale-[0.85] xs:scale-[0.85] md:scale-[0.85] lg:scale-[0.9] opacity-60 md:opacity-100 origin-center transition-transform duration-500 pointer-events-none">
-        <CurvedText text={techStackText} radius={260} duration={25} />
-      </div>
+    <motion.div
+      className={`pointer-events-none absolute inset-0 ${className}`}
+      initial={{ opacity: 0, scale: 1.04 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+      aria-hidden="true"
+    >
+      <div className="absolute inset-0 bg-[#12110d]" />
+      {/* <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_16%,rgba(191,186,159,0.58),transparent_30%),linear-gradient(180deg,rgba(133,124,96,0.18)_0%,rgba(28,24,18,0.18)_38%,rgba(8,7,6,0.6)_100%)]" /> */}
 
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-[280px] h-[280px] md:w-[500px] md:h-[500px] lg:w-[550px] lg:h-[550px] bg-cyan-500/5 rounded-full blur-2xl" />
-      </div>
-
-      <motion.div
-        className="relative w-[80vw] max-w-[450px] h-[80vw] max-h-[450px] md:w-[600px] md:h-[600px] lg:w-[650px] lg:h-[650px] mx-auto group"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <div className="absolute inset-0 rounded-full border border-white/5" />
-        <div className="absolute inset-4 rounded-full border border-white/10" />
-
-        <div className="absolute inset-4.5 rounded-full overflow-hidden">
+      <div className="absolute inset-y-0 left-1/2 top-0 w-[96vw] -translate-x-1/2 md:w-[82vw] lg:w-[76vw]">
+        <div className="absolute inset-0 sepia-[0.18] saturate-[0.82] contrast-[0.94] brightness-[0.72]">
           <Image
             src={src}
             alt={alt}
             fill
-            sizes="(max-width: 768px) 80vw, (max-width: 1200px) 600px, 650px"
-            className="object-contain grayscale group-hover:grayscale-0 transition-all duration-700"
             priority
+            sizes="100vw"
+            className="object-contain object-top"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
         </div>
-      </motion.div>
-    </div>
+      </div>
+
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(19,17,13,0.86)_0%,rgba(19,17,13,0.58)_20%,rgba(19,17,13,0.16)_44%,rgba(19,17,13,0.22)_68%,rgba(19,17,13,0.72)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(241,233,210,0.03)_0%,rgba(0,0,0,0)_18%,rgba(0,0,0,0.12)_56%,rgba(0,0,0,0.62)_100%)]" />
+    </motion.div>
   );
 }

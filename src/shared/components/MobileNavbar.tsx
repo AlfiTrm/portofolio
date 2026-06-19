@@ -26,7 +26,9 @@ const navItems = [
   { name: "Contact", label: "Contact", href: "#contact", group: "contact" },
 ];
 
-export default function MobileNavbar({ onOpenResume }: MobileNavbarProps) {
+export default function MobileNavbar({
+  onOpenResume: _onOpenResume,
+}: MobileNavbarProps) {
   const [activeTab, setActiveTab] = useState("Home");
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -188,15 +190,6 @@ export default function MobileNavbar({ onOpenResume }: MobileNavbarProps) {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <div className="md:hidden fixed bottom-5 right-5 z-[61]">
-        <button
-          onClick={() => onOpenResume?.()}
-          className="uppercase text-[0.68rem] tracking-[0.24em] text-white/46 hover:text-white/78 transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-        >
-          Resume
-        </button>
-      </div>
     </>
   );
 }

@@ -30,7 +30,7 @@ interface NavbarProps {
   onOpenResume?: () => void;
 }
 
-export default function Navbar({ onOpenResume }: NavbarProps) {
+export default function Navbar({ onOpenResume: _onOpenResume }: NavbarProps) {
   const [activeItem, setActiveItem] = useState("Home");
   const [scrolled, setScrolled] = useState(false);
 
@@ -131,15 +131,6 @@ export default function Navbar({ onOpenResume }: NavbarProps) {
             </div>
             <div className="pt-[0.9rem]">{renderNavGroup(navContact)}</div>
           </div>
-        </div>
-
-        <div className="pointer-events-auto fixed bottom-6 right-6 hidden md:block">
-          <button
-            onClick={() => onOpenResume?.()}
-            className="uppercase text-[0.68rem] xl:text-[0.72rem] tracking-[0.24em] text-white/46 hover:text-white/78 transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-          >
-            Resume
-          </button>
         </div>
       </nav>
     </>

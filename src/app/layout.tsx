@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Climate_Crisis, Geist, Geist_Mono } from "next/font/google";
+import {
+  Climate_Crisis,
+  Cormorant_Garamond,
+  Geist,
+  Geist_Mono,
+} from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 import "../styles/globals.css";
@@ -19,6 +24,12 @@ const geistMono = Geist_Mono({
 const climateCrisis = Climate_Crisis({
   variable: "--font-climate-crisis",
   subsets: ["latin"],
+});
+
+const cormorantGaramond = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 const akiraExpanded = localFont({
@@ -99,7 +110,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         data-shell-ready="false"
-        className={`${geistSans.variable} ${geistMono.variable} ${climateCrisis.variable} ${akiraExpanded.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${climateCrisis.variable} ${cormorantGaramond.variable} ${akiraExpanded.variable} antialiased`}
       >
         <div id="preload-shell" aria-hidden="true">
           <div className="preload-shell__bars">
