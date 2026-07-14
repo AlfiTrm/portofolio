@@ -1,77 +1,46 @@
-export const timelineData = [
+export type TimelineCategory =
+  | "education"
+  | "organization"
+  | "hackathon"
+  | "contract"
+  | "internship"
+  | "personal";
+
+export type TimelineMilestone = {
+  title: string;
+  timeLabel: string;
+  category: TimelineCategory;
+};
+
+export const timelineMilestones: TimelineMilestone[] = [
   {
-    period: "2023 — Sekarang",
-    entries: [
-      {
-        title: "Bachelor of Computer Science — Information Systems",
-        company: "Universitas Brawijaya",
-        category: "Education",
-        description: "",
-        highlights: [],
-      },
-    ],
+    title: "Information Systems, Brawijaya University",
+    timeLabel: "2023 - sekarang",
+    category: "education",
   },
   {
-    period: "Mei – Juli 2025",
-    entries: [
-      {
-        title: "Frontend Developer — Event Platform",
-        company: "IT Fest 2025",
-        category: "Project",
-        description: "Mengembangkan komponen frontend responsif & interaktif.",
-        highlights: ["10.000+ page views"],
-      },
-      {
-        title: "Frontend Developer — Organization Website",
-        company: "Keluarga Besar Mahasiswa Departemen Sistem Informasi",
-        category: "Project",
-        description: "Mengembangkan halaman informasi organisasi.",
-        highlights: ["Custom 404 error page"],
-      },
-    ],
+    title: "IT Fest 2025 Event Platform",
+    timeLabel: "Mei - Juli 2025",
+    category: "organization",
   },
   {
-    period: "Oktober – November 2025",
-    entries: [
-      {
-        title: "Frontend Developer — Organization Website",
-        company: "Indonesian Future Leaders (IFL Chapter Malang)",
-        category: "Project",
-        description: "Lead frontend development untuk website organisasi.",
-        highlights: ["Implementasi fitur registrasi relawan dengan user flow berbasis chatbot"],
-      },
-    ],
+    title: "KBMDSI Organization Website",
+    timeLabel: "Mei - Juli 2025",
+    category: "organization",
   },
   {
-    period: "2025 — Sekarang",
-    entries: [
-      {
-        title: "Frontend Web Developer (Intern)",
-        company: "PT Inspirasi Mandiri Nusantara",
-        category: "Work",
-        description: "Develop & maintain frontend features menggunakan React.",
-        highlights: [],
-      },
-      {
-        title: "Frontend Developer (Contract)",
-        company: "Academic Competition",
-        category: "Work",
-        description: "Membangun dan memelihara web application menggunakan React & TailwindCSS.",
-        highlights: ["700+ monthly active users"],
-      },
-    ],
+    title: "IFL Chapter Malang Website",
+    timeLabel: "Oktober - November 2025",
+    category: "organization",
+  },
+  {
+    title: "PT Inspirasi Mandiri Nusantara",
+    timeLabel: "2025 - sekarang",
+    category: "internship",
+  },
+  {
+    title: "Academic Competition Platform",
+    timeLabel: "2025 - sekarang",
+    category: "contract",
   },
 ];
-
-export type TimelineEntry = {
-  title: string;
-  company: string;
-  category: "Work" | "Project" | "Education";
-  description: string;
-  highlights: string[];
-};
-
-export type TimelinePeriod = {
-  period: string;
-  entries: TimelineEntry[];
-};

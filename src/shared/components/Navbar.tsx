@@ -14,9 +14,9 @@ const navItems = [
     group: "secondary",
   },
   {
-    name: "Skills",
-    label: "Capabilities",
-    href: "#skills",
+    name: "Recognition",
+    label: "Recognition",
+    href: "#recognition",
     group: "secondary",
   },
   { name: "Contact", label: "Contact", href: "#contact", group: "contact" },

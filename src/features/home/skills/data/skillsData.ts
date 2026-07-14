@@ -1,28 +1,29 @@
 export const skillsData = {
-  title: "My Services",
-  subtitle: "What I can do for you",
-  services: [
+  title: "Awards",
+  description:
+    "Some of the moments that made me trust my own work more.",
+  awards: [
     {
-      title: "Frontend Development",
-      description: "Building responsive, performant, and interactive web applications using modern technologies.",
-      skills: [
-        { name: "React", level: 50 },
-        { name: "Next.js", level: 60 },
-        { name: "TypeScript", level: 45 },
-        { name: "Tailwind CSS", level: 65 },
-        { name: "Framer Motion", level: 40 },
-      ],
+      place: "2nd",
+      title: "Hackathon 9.0 TechnoScape",
+      year: "2026",
+      note: "Second place finish in a fast, high-pressure build format.",
+      theme: "Smart digital solution for a real-world problem space.",
+      entry:
+        "The team brought a product concept and interactive prototype designed to feel usable, clear, and presentable in a short window.",
+      role:
+        "I handled the frontend direction and interface layer, helping the idea read faster and feel more polished.",
     },
     {
-      title: "UI/UX Design",
-      description: "Designing intuitive and aesthetically pleasing user interfaces with a focus on user experience.",
-      skills: [
-        { name: "Figma", level: 40 },
-        { name: "Prototyping", level: 35 },
-        { name: "Wireframing", level: 40 },
-        { name: "User Research", level: 20 },
-        { name: "Design Systems", level: 45 },
-      ],
+      place: "1st",
+      title: "Hackaton FIT Competition",
+      year: "2026",
+      note: "First place with a concept shaped to feel strong both as a solution and as a presentation.",
+      theme: "A solution-focused competition build with stronger product framing.",
+      entry:
+        "We presented a concept that balanced practical problem solving with a final delivery strong enough to feel convincing and complete.",
+      role:
+        "My focus was frontend execution, experience flow, and giving the final build a cleaner interface presence.",
     },
   ],
 };
