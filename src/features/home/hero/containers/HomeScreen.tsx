@@ -1,22 +1,37 @@
 "use client";
 
-import { Icon } from "@iconify/react";
+import dynamic from "next/dynamic";
 import { useState, useCallback, useEffect } from "react";
 import Navbar from "@/shared/components/Navbar";
 import MobileNavbar from "@/shared/components/MobileNavbar";
 import SmoothScroll from "@/shared/components/SmoothScroll";
-import Footer from "@/shared/components/Footer";
 import Spotlight from "@/shared/components/Spotlight";
-import ResumeModal from "@/shared/components/ResumeModal";
-import FloatingChatSheet from "@/shared/components/FloatingChatSheet";
-import TechStackTransition from "@/shared/components/TechStackTransition";
 import HeroContent from "../components/HeroContent";
-import AboutSection from "@/features/home/about/containers/AboutSection";
-import SkillsSection from "@/features/home/skills/containers/SkillsSection";
-import ProjectsSection from "@/features/home/projects/containers/ProjectsSection";
-import ContactSection from "@/features/home/contact/containers/ContactSection";
-
 import EntranceLoader from "@/shared/components/EntranceLoader";
+
+const TechStackTransition = dynamic(
+  () => import("@/shared/components/TechStackTransition")
+);
+const AboutSection = dynamic(
+  () => import("@/features/home/about/containers/AboutSection")
+);
+const SkillsSection = dynamic(
+  () => import("@/features/home/skills/containers/SkillsSection")
+);
+const ProjectsSection = dynamic(
+  () => import("@/features/home/projects/containers/ProjectsSection")
+);
+const ContactSection = dynamic(
+  () => import("@/features/home/contact/containers/ContactSection")
+);
+const Footer = dynamic(() => import("@/shared/components/Footer"));
+const ResumeModal = dynamic(() => import("@/shared/components/ResumeModal"), {
+  ssr: false,
+});
+const FloatingChatSheet = dynamic(
+  () => import("@/shared/components/FloatingChatSheet"),
+  { ssr: false }
+);
 
 export default function HomeScreen() {
   const [isLoading, setIsLoading] = useState(true);
@@ -94,11 +109,11 @@ export default function HomeScreen() {
           type="button"
           aria-label="Open chat"
           onClick={() => setChatOpen((current) => !current)}
-          className={`fixed bottom-6 right-6 z-[62] hidden items-center gap-2 uppercase text-[0.68rem] tracking-[0.24em] text-white/46 transition-colors duration-300 hover:text-white/78 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black md:flex ${
+          className={`fixed bottom-6 right-6 z-[62] hidden items-center gap-2 uppercase text-[0.72rem] tracking-[0.24em] text-white/46 transition-colors duration-300 hover:text-white/78 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black md:flex ${
             isLoading ? "pointer-events-none opacity-0" : "opacity-100"
           }`}
         >
-          <Icon icon="iconoir:spark-solid" className="text-[0.82rem]" />
+          <span className="h-2 w-2 rounded-full bg-current" />
           <span>ask</span>
         </button>
 

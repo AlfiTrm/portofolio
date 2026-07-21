@@ -51,9 +51,9 @@ export default function ExperienceTimeline() {
   return (
     <section
       ref={sectionRef}
-      className="relative -mt-[12rem] overflow-visible pb-14"
+      className="relative -mt-48 overflow-visible pb-14"
     >
-      <div className="pointer-events-none absolute inset-x-[14%] top-[1rem] h-[26rem] bg-[radial-gradient(circle_at_50%_0%,rgba(240,231,212,0.11),rgba(240,231,212,0.03)_34%,transparent_74%)] blur-3xl" />
+      <div className="pointer-events-none absolute inset-x-[14%] top-4 h-104 bg-[radial-gradient(circle_at_50%_0%,rgba(240,231,212,0.11),rgba(240,231,212,0.03)_34%,transparent_74%)] blur-3xl" />
 
       <div className="relative mx-auto max-w-6xl px-0 md:px-8">
         <div className="relative" style={{ minHeight: `${timelineHeightRem}rem` }}>
