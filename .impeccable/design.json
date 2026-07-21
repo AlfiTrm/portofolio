@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-14T00:00:00.000Z",
+  "title": "Design System: Alfi Tsani Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "obsidian-stage": {
+        "role": "primary",
+        "displayName": "Obsidian Stage",
+        "canonical": "oklch(0.145 0 0)",
+        "tonalRamp": ["#060606", "#111111", "#1C1C1C", "#2B2B2B", "#474747", "#717171", "#A7A7A7", "#EFEFEF"]
+      },
+      "soft-ivory": {
+        "role": "neutral",
+        "displayName": "Soft Ivory",
+        "canonical": "oklch(0.95 0.01 85)",
+        "tonalRamp": ["#231F18", "#3A3329", "#544A3A", "#726550", "#94846B", "#B8A995", "#DDD3C5", "#F2EDE6"]
+      },
+      "linen-glow": {
+        "role": "neutral",
+        "displayName": "Linen Glow",
+        "canonical": "oklch(0.93 0.018 85)",
+        "tonalRamp": ["#221D16", "#393026", "#534537", "#705E4B", "#8F7A63", "#B19A80", "#D3BEA8", "#F0E7D4"]
+      },
+      "warm-sand": {
+        "role": "tertiary",
+        "displayName": "Warm Sand",
+        "canonical": "oklch(0.78 0.08 76)",
+        "tonalRamp": ["#23180E", "#402B18", "#5E4024", "#815936", "#A4764F", "#C6966F", "#E0BA96", "#F2DEC8"]
+      },
+      "terracotta-haze": {
+        "role": "tertiary",
+        "displayName": "Terracotta Haze",
+        "canonical": "oklch(0.65 0.11 44)",
+        "tonalRamp": ["#23100C", "#431A14", "#632720", "#8B3A2F", "#B45547", "#C97B63", "#E0A18C", "#F1CFC4"]
+      },
+      "mist-gray": {
+        "role": "neutral",
+        "displayName": "Mist Gray",
+        "canonical": "oklch(0.63 0 0)",
+        "tonalRamp": ["#101010", "#1F1F1F", "#343434", "#4F4F4F", "#6C6C6C", "#888888", "#B0B0B0", "#E2E2E2"]
+      },
+      "signal-cyan": {
+        "role": "secondary",
+        "displayName": "Signal Cyan",
+        "canonical": "oklch(0.8 0.14 215)",
+        "tonalRamp": ["#041E23", "#08333A", "#0E4B56", "#146574", "#1A83A0", "#22A9CF", "#52D0EE", "#D8FAFF"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero words and signature statements only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section anchors and major narrative pivots."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Cards, compact blocks, and project titles."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Supporting prose and explanatory content."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Navigation, metadata, instrumentation, and chips."
+      }
+    },
+    "shadows": [
+      {
+        "name": "projection-bloom",
+        "value": "0 0 30px rgba(34, 211, 238, 0.2)",
+        "purpose": "Active project or technical emphasis zones."
+      },
+      {
+        "name": "soft-edge-glow",
+        "value": "0 0 20px rgba(255, 255, 255, 0.1)",
+        "purpose": "Subtle hover and focus amplification."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-stage",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Default reveal and interface motion."
+      },
+      {
+        "name": "duration-standard",
+        "value": "300ms",
+        "purpose": "Default component transition timing."
+      }
+    ],
+    "breakpoints": [
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary CTA Button",
+      "kind": "button",
+      "refersTo": "cta-button",
+      "description": "Primary call-to-action treatment for resume and contact actions.",
+      "html": "<button class=\"ds-btn-primary\">Connect</button>",
+      "css": ".ds-btn-primary { background: #F2EDE6; color: #000000; border: none; border-radius: 999px; padding: 0.875rem 1.75rem; font-family: Geist, Arial, Helvetica, sans-serif; font-size: 0.95rem; font-weight: 600; letter-spacing: 0.02em; transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), background-color 300ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-btn-primary:hover { transform: translateY(-1px); background: #FFFFFF; box-shadow: 0 0 20px rgba(255,255,255,0.12); } .ds-btn-primary:focus-visible { outline: 2px solid rgba(242, 237, 230, 0.8); outline-offset: 3px; }"
+    },
+    {
+      "name": "Editorial Nav Link",
+      "kind": "nav",
+      "refersTo": "nav-link-active",
+      "description": "Uppercase directional navigation with a quiet active marker.",
+      "html": "<button class=\"ds-nav-link ds-nav-link--active\"><span class=\"ds-nav-spark\"></span>Recognition</button>",
+      "css": ".ds-nav-link { position: relative; display: inline-flex; align-items: center; gap: 0.5rem; border: none; background: transparent; color: rgba(255,255,255,0.46); font-family: Geist, Arial, Helvetica, sans-serif; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; transition: color 300ms cubic-bezier(0.22, 1, 0.36, 1), letter-spacing 300ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-nav-link:hover { color: rgba(255,255,255,0.76); } .ds-nav-link--active { color: #F2EDE6; letter-spacing: 0.18em; } .ds-nav-spark { width: 0.42rem; height: 0.42rem; border-radius: 999px; background: #F2EDE6; box-shadow: 0 0 10px rgba(242,237,230,0.45); } .ds-nav-link:focus-visible { outline: 2px solid rgba(242, 237, 230, 0.7); outline-offset: 4px; border-radius: 0.25rem; }"
+    },
+    {
+      "name": "Recognition Chip",
+      "kind": "chip",
+      "refersTo": "recognition-chip",
+      "description": "Low-contrast metadata pill for proof tags and project signals.",
+      "html": "<span class=\"ds-chip\">Professional trust</span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; border: 1px solid rgba(255,255,255,0.10); background: rgba(0,0,0,0.2); color: rgba(255,255,255,0.72); border-radius: 999px; padding: 0.375rem 0.75rem; font-family: Geist, Arial, Helvetica, sans-serif; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; }"
+    },
+    {
+      "name": "Recognition Card",
+      "kind": "card",
+      "refersTo": "project-card",
+      "description": "Flat, atmospheric content card for proof-based sections.",
+      "html": "<article class=\"ds-card\"><p class=\"ds-card-meta\">Contract project · 2025 - sekarang</p><h3 class=\"ds-card-title\">Academic Competition Platform</h3><p class=\"ds-card-body\">A proof-first content block with generous spacing and quiet containment.</p></article>",
+      "css": ".ds-card { border: 1px solid rgba(255,255,255,0.10); background: rgba(255,255,255,0.04); color: #F2EDE6; border-radius: 1.75rem; padding: 1.5rem; backdrop-filter: blur(10px); } .ds-card-meta { margin: 0; color: rgba(216,176,140,0.85); font-family: Geist Mono, monospace; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; } .ds-card-title { margin: 0.75rem 0 0; color: #FFFFFF; font-family: Geist, Arial, Helvetica, sans-serif; font-size: 1.25rem; font-weight: 600; line-height: 1.15; } .ds-card-body { margin: 0.75rem 0 0; color: rgba(255,255,255,0.58); font-family: Geist, Arial, Helvetica, sans-serif; font-size: 0.95rem; line-height: 1.6; }"
+    },
+    {
+      "name": "Project Projection Shell",
+      "kind": "custom",
+      "refersTo": "project-card",
+      "description": "Cinematic project shell with technical emphasis and restrained glow.",
+      "html": "<div class=\"ds-project\"><div class=\"ds-project__frame\"><p class=\"ds-project__label\">Projection Active</p><h3 class=\"ds-project__title\">IT Fest 2025 Event Platform</h3><p class=\"ds-project__body\">The standout technical showcase pattern for featured work.</p></div></div>",
+      "css": ".ds-project { position: relative; border-radius: 1rem; padding: 0; } .ds-project::after { content: ''; position: absolute; inset: 12% 8% -8% 8%; background: radial-gradient(circle at center, rgba(34,211,238,0.22), transparent 60%); filter: blur(18px); z-index: 0; } .ds-project__frame { position: relative; z-index: 1; border: 1px solid rgba(255,255,255,0.12); background: #000000; color: #F2EDE6; border-radius: 1rem; padding: 2rem; box-shadow: 0 0 30px rgba(34,211,238,0.16); } .ds-project__label { margin: 0 0 0.75rem; color: #22D3EE; font-family: Geist Mono, monospace; font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase; } .ds-project__title { margin: 0; color: #FFFFFF; font-family: Geist, Arial, Helvetica, sans-serif; font-size: 1.5rem; font-weight: 700; line-height: 1.1; } .ds-project__body { margin: 0.9rem 0 0; color: rgba(255,255,255,0.6); font-family: Geist, Arial, Helvetica, sans-serif; font-size: 0.95rem; line-height: 1.6; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Quiet Signal",
+    "overview": "This system is built to feel calm before it feels loud. The page opens like a dark stage: deep black surfaces, pale ink, controlled warmth, and a few precise moments of glow. The design should not beg for attention. It should make visitors pause, look closer, and conclude that the work is serious.\n\nThe portfolio is personal, but it is not diaristic. It should feel elegant and deliberate rather than expressive for its own sake. Motion is smooth, not flashy. Surfaces stay mostly flat. Depth comes from layering, perspective, and light falloff rather than decorative shadow stacks.\n\nThis system explicitly rejects generic AI-portfolio grammar, noisy experiment-for-experiment's-sake interfaces, and cold corporate personal sites. It should never look crowded, over-rounded, or dependent on decorative tricks to feel premium.",
+    "keyCharacteristics": [
+      "Quiet black-first surfaces with pale editorial ink",
+      "Display typography used sparingly as a signature move",
+      "Mostly flat layers with occasional cinematic cyan projection accents",
+      "High whitespace and controlled density to create trust",
+      "Minimal but expressive details that reward closer attention"
+    ],
+    "rules": [
+      {
+        "name": "The Rare Accent Rule",
+        "body": "Cyan is not a theme wash. It appears only where the interface needs a technical pulse: active projection, hover confirmation, or a deliberate interaction state.",
+        "section": "colors"
+      },
+      {
+        "name": "The Black Stage Rule",
+        "body": "Large surfaces stay black or nearly black. Warmth enters through ink, haze, and detail accents, not through beige body backgrounds.",
+        "section": "colors"
+      },
+      {
+        "name": "The Signature Font Rule",
+        "body": "Akira Expanded appears only where the page needs a memorable stamp. If every heading uses it, it stops feeling special and starts feeling costume-like.",
+        "section": "typography"
+      },
+      {
+        "name": "The Calm Body Rule",
+        "body": "Supporting copy should stay easy to read and never compete with the display moments. If body copy feels ornamental, the hierarchy has failed.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-First Rule",
+        "body": "Surfaces rest flat. Elevation arrives only as interaction feedback or cinematic atmosphere.",
+        "section": "elevation"
+      },
+      {
+        "name": "The No Ghost Card Rule",
+        "body": "Do not pair thin decorative borders with large soft shadows on ordinary cards or buttons. If an element needs emphasis, choose border, glow, or movement, never all three at once.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use black or near-black as the dominant canvas and let whitespace create the sense of luxury.",
+      "Do reserve Akira Expanded for true signature moments instead of turning it into a universal heading font.",
+      "Do keep motion smooth, eased, and controlled so the interface feels polished rather than busy.",
+      "Do use exact, readable pale ink values like `#F2EDE6` and `#F0E7D4` when text needs to feel warm without sacrificing contrast.",
+      "Do let spacing carry confidence. If a section feels tight, add room before adding decoration."
+    ],
+    "donts": [
+      "Don't let the interface feel like a generic AI-made portfolio. That means no reflex gradients, no repetitive eyebrow scaffolding, and no decorative effects that are there only to say \"design.\"",
+      "Don't make the site noisy or experimentation-heavy. The portfolio can be expressive, but it should still feel hireable.",
+      "Don't make the site cold, stiff, or overly corporate. Precision matters, but personality must stay visible.",
+      "Don't over-round cards, sections, or inputs beyond `2rem`. This system is soft-edged, not bubbly.",
+      "Don't rely on gradient text as a core emphasis device. Use contrast, scale, or weight instead."
+    ]
+  }
+}

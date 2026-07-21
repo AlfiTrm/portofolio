@@ -2,21 +2,44 @@
 
 import { useEffect, useRef, useState } from "react";
 
-type CursorMode = "default" | "hover" | "text";
+type CursorMode = "default" | "hover" | "text" | "media";
+
+const interactiveSelector =
+  "a, button, [role='button'], .cursor-pointer, input, textarea, select, label";
+const textSelector = "p, h1, h2, h3, h4, h5, h6, span, li, small, strong, em";
+const mediaSelector =
+  "img, video, canvas, svg, [data-cursor='media'], [data-cursor='spotlight']";
 
 export default function CustomCursor() {
+  const [enabled, setEnabled] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [mode, setMode] = useState<CursorMode>("default");
 
-  const mouse = useRef({ x: -100, y: -100 });
-  const trailPos = useRef({ x: -100, y: -100 });
-  const vel = useRef({ x: 0, y: 0 });
-
   const cursorRef = useRef<HTMLDivElement>(null);
-  const trailRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const finePointerQuery = window.matchMedia("(pointer: fine)");
+    const reducedMotionQuery = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    );
+
+    const syncEnabled = () => {
+      setEnabled(finePointerQuery.matches && !reducedMotionQuery.matches);
+    };
+
+    syncEnabled();
+    finePointerQuery.addEventListener("change", syncEnabled);
+    reducedMotionQuery.addEventListener("change", syncEnabled);
+
+    return () => {
+      finePointerQuery.removeEventListener("change", syncEnabled);
+      reducedMotionQuery.removeEventListener("change", syncEnabled);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!enabled) return;
+
     const style = document.createElement("style");
     style.innerHTML = `*, *::before, *::after { cursor: none !important; }`;
     style.id = "hide-cursor";
@@ -25,126 +48,97 @@ export default function CustomCursor() {
     return () => {
       document.getElementById("hide-cursor")?.remove();
     };
-  }, []);
+  }, [enabled]);
 
   useEffect(() => {
-    let rafId = 0;
-    const SPEED = 0.22;
-    const STRETCH = 0.3;
+    if (!enabled) return;
 
-    const animate = () => {
-      if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate3d(${mouse.current.x}px, ${mouse.current.y}px, 0)`;
-      }
+    const updatePosition = (x: number, y: number) => {
+      if (!cursorRef.current) return;
 
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate3d(${mouse.current.x}px, ${mouse.current.y}px, 0)`;
-      }
-
-      const dx = mouse.current.x - trailPos.current.x;
-      const dy = mouse.current.y - trailPos.current.y;
-
-      vel.current.x += (dx * SPEED - vel.current.x) * 0.5;
-      vel.current.y += (dy * SPEED - vel.current.y) * 0.5;
-
-      trailPos.current.x += vel.current.x;
-      trailPos.current.y += vel.current.y;
-
-      const speed = Math.sqrt(vel.current.x ** 2 + vel.current.y ** 2);
-      const angle = Math.atan2(vel.current.y, vel.current.x) * (180 / Math.PI);
-      const stretch = Math.min(speed * STRETCH, 0.5);
-
-      if (trailRef.current) {
-        trailRef.current.style.transform = `
-          translate3d(${trailPos.current.x}px, ${trailPos.current.y}px, 0)
-          rotate(${angle}deg)
-          scale(${1 + stretch}, ${1 - stretch * 0.4})
-        `;
-      }
-
-      if (!isVisible && mouse.current.x > 0) setIsVisible(true);
-
-      rafId = requestAnimationFrame(animate);
+      cursorRef.current.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
     };
 
-    const onMove = (e: MouseEvent) => {
-      mouse.current = { x: e.clientX, y: e.clientY };
+    const onMove = (event: MouseEvent) => {
+      updatePosition(event.clientX, event.clientY);
+
+      if (!isVisible) {
+        setIsVisible(true);
+      }
     };
 
-    const onOver = (e: MouseEvent) => {
-      const t = e.target as HTMLElement;
-      const isLink = t.closest(
-        "a, button, [role='button'], .cursor-pointer, input"
-      );
-      const isText =
-        !isLink && t.closest("p, h1, h2, h3, h4, h5, h6, span, li");
+    const onOver = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (!target) return;
 
-      if (isLink) setMode("hover");
-      else if (isText) setMode("text");
-      else setMode("default");
+      if (target.closest("[data-cursor='default']")) {
+        setMode("default");
+        return;
+      }
+
+      if (target.closest(mediaSelector)) {
+        setMode("media");
+        return;
+      }
+
+      if (target.closest(interactiveSelector)) {
+        setMode("hover");
+        return;
+      }
+
+      if (target.closest(textSelector)) {
+        setMode("text");
+        return;
+      }
+
+      setMode("default");
+    };
+
+    const onLeaveWindow = (event: MouseEvent) => {
+      if (event.relatedTarget) return;
+      setIsVisible(false);
     };
 
     window.addEventListener("mousemove", onMove, { passive: true });
     window.addEventListener("mouseover", onOver, { passive: true });
-    rafId = requestAnimationFrame(animate);
+    window.addEventListener("mouseout", onLeaveWindow);
 
     return () => {
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseover", onOver);
-      cancelAnimationFrame(rafId);
+      window.removeEventListener("mouseout", onLeaveWindow);
     };
-  }, [isVisible]);
+  }, [enabled, isVisible]);
+
+  if (!enabled) {
+    return null;
+  }
+
+  const variantClassName =
+    mode === "hover"
+      ? "h-12 w-12 border-[#f2ede6]/70 bg-[#f2ede6]/6 shadow-[0_0_18px_rgba(242,237,230,0.16)]"
+      : mode === "text"
+        ? "h-10 w-3 rounded-md border-[#f2ede6]/58 bg-[#f2ede6]/22"
+        : mode === "media"
+          ? "h-16 w-16 border-[#22d3ee]/42 bg-[#22d3ee]/10 shadow-[0_0_26px_rgba(34,211,238,0.2)]"
+          : "h-5 w-5 border-white/45 bg-white/14";
 
   return (
-    <>
-      <svg className="absolute w-0 h-0">
-        <defs>
-          <filter id="goo">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
-            <feColorMatrix
-              in="blur"
-              mode="matrix"
-              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -12"
-            />
-          </filter>
-        </defs>
-      </svg>
-
+    <div
+      className={`pointer-events-none fixed inset-0 z-[9999] hidden md:block transition-opacity duration-200 ${
+        isVisible ? "opacity-100" : "opacity-0"
+      }`}
+    >
       <div
-        className={`pointer-events-none fixed inset-0 z-[9999] hidden md:block transition-opacity duration-300 ${
-          isVisible ? "opacity-100" : "opacity-0"
-        }`}
+        ref={cursorRef}
+        className={`absolute left-0 top-0 rounded-full border backdrop-blur-[2px] transition-[width,height,border-radius,background-color,border-color,box-shadow,opacity] duration-180 ease-out ${variantClassName}`}
       >
-        <div className="mix-blend-difference" style={{ filter: "url(#goo)" }}>
-          <div
-            ref={cursorRef}
-            className="absolute top-0 left-0 w-2 h-2 bg-white rounded-full -translate-x-1/2 -translate-y-1/2 will-change-transform"
-          />
-
-          <div
-            ref={trailRef}
-            className="absolute top-0 left-0 bg-white rounded-full -translate-x-1/2 -translate-y-1/2 will-change-transform"
-            style={{
-              width: mode === "text" ? 8 : 20,
-              height: mode === "text" ? 32 : 20,
-              borderRadius: mode === "text" ? 4 : "50%",
-              transition: "width 0.2s, height 0.2s, border-radius 0.2s",
-            }}
-          />
-        </div>
-
-        <div
-          ref={ringRef}
-          className="absolute top-0 left-0 rounded-full border border-white/50 -translate-x-1/2 -translate-y-1/2 will-change-transform"
-          style={{
-            width: 48,
-            height: 48,
-            opacity: mode === "hover" ? 1 : 0,
-            transition:
-              "opacity 0.2s, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)",
-          }}
+        <span
+          className={`absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#f2ede6] transition-transform duration-180 ease-out ${
+            mode === "media" ? "scale-125" : "scale-100"
+          }`}
         />
       </div>
-    </>
+    </div>
   );
 }
