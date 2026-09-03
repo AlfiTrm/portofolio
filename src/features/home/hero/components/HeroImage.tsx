@@ -9,6 +9,7 @@ interface HeroImageProps {
   alt: string;
   className?: string;
   isActive?: boolean;
+  onReady?: () => void;
 }
 
 export default function HeroImage({
@@ -16,13 +17,14 @@ export default function HeroImage({
   alt,
   className = "",
   isActive = true,
+  onReady,
 }: HeroImageProps) {
   return (
     <div
       className={`pointer-events-none absolute inset-0 ${className}`}
       aria-hidden="true"
     >
-      <div className="absolute inset-0 bg-[#12110d]" />
+      <div className="absolute inset-0 bg-stage" />
 
       <motion.div
         className="absolute inset-y-0 left-1/2 top-0 w-[96vw] -translate-x-1/2 md:w-[82vw] lg:w-[76vw]"
@@ -55,6 +57,7 @@ export default function HeroImage({
             priority
             sizes="100vw"
             className="object-contain object-top"
+            onLoad={onReady}
           />
         </motion.div>
       </motion.div>

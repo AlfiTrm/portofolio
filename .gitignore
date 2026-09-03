@@ -39,3 +39,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local AI tooling and generated planning files
+/.agents/
+/.codex/
+/.github/hooks/
+/.impeccable/
+/docs/superpowers/
+/AGENTS.md
+/DESIGN.md
+/PRODUCT.md
+
+# local command output
+/build-output.txt
+/tsc-output.txt

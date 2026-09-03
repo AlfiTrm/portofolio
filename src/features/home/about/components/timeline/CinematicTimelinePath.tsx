@@ -32,12 +32,23 @@ export default function CinematicTimelinePath({
       <motion.path
         d={pathDefinition}
         fill="none"
-        stroke="rgba(240,231,212,0)"
-        strokeWidth="9"
+        stroke="rgba(216,176,140,0.18)"
+        strokeWidth="14"
         strokeLinecap="round"
         style={{
           pathLength: progress,
-          filter: "blur(8px)",
+          filter: "blur(12px)",
+        }}
+      />
+      <motion.path
+        d={pathDefinition}
+        fill="none"
+        stroke="rgba(240,231,212,0.22)"
+        strokeWidth="7"
+        strokeLinecap="round"
+        style={{
+          pathLength: progress,
+          filter: "blur(3px)",
         }}
       />
       <motion.path

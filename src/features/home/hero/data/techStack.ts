@@ -23,6 +23,41 @@ export const techStack = [
     name: "Tailwind CSS",
     icon: "tailwind",
     category: "styling"
+  },
+  {
+    name: "Figma",
+    icon: "figma",
+    category: "design"
+  },
+  {
+    name: "Vercel",
+    icon: "vercel",
+    category: "deployment"
+  },
+  {
+    name: "GitHub",
+    icon: "github",
+    category: "platform"
+  },
+  {
+    name: "Supabase",
+    icon: "supabase",
+    category: "backend"
+  },
+  {
+    name: "Laravel",
+    icon: "laravel",
+    category: "backend"
+  },
+  {
+    name: "HTML",
+    icon: "html",
+    category: "markup"
+  },
+  {
+    name: "CSS",
+    icon: "css",
+    category: "styling"
   }
 ];
 

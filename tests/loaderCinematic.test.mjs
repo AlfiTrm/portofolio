@@ -25,20 +25,19 @@ test("entrance and quick loaders use three-rectangle cinematic loading marks", (
   assert.equal(quick.includes("LoaderTitleCard"), true);
 });
 
-test("layout and globals provide server-first black loading shell", () => {
+test("layout and globals do not gate first paint behind server loading shell", () => {
   const layout = read("src/app/layout.tsx");
   const globals = read("src/styles/globals.css");
 
-  assert.equal(layout.includes("preload-shell"), true);
-  assert.equal(layout.includes("preload-shell__bars"), true);
-  assert.equal(layout.includes("data-shell-ready"), true);
+  assert.equal(layout.includes("preload-shell"), false);
+  assert.equal(layout.includes("preload-shell__bars"), false);
+  assert.equal(layout.includes("data-shell-ready"), false);
   assert.equal(layout.includes("localFont"), true);
   assert.equal(layout.includes("--font-akira"), true);
   assert.equal(globals.includes("html, body"), true);
-  assert.equal(globals.includes("[data-shell-ready=\"false\"]"), true);
-  assert.equal(globals.includes(".preload-shell__bars"), true);
-  assert.equal(globals.includes("width: 3rem;"), true);
-  assert.equal(globals.includes("@keyframes preloadBar"), true);
+  assert.equal(globals.includes("[data-shell-ready=\"false\"]"), false);
+  assert.equal(globals.includes(".preload-shell__bars"), false);
+  assert.equal(globals.includes("@keyframes preloadBar"), false);
 });
 
 test("quick loader avoids invalid paragraph nesting and hero image declares sizes", () => {
@@ -50,17 +49,18 @@ test("quick loader avoids invalid paragraph nesting and hero image declares size
   assert.equal(heroImage.includes("sizes="), true);
 });
 
-test("preload shell is dismissed by home screen completion, not immediately on mount", () => {
-  const shellDismiss = read("src/shared/components/PreloadShellDismiss.tsx");
+test("entrance loader exits after hero image readiness and minimum duration", () => {
+  const entrance = read("src/shared/components/EntranceLoader.tsx");
   const homeScreen = read("src/features/home/hero/containers/HomeScreen.tsx");
 
-  assert.equal(shellDismiss.includes("data-shell-ready = \"true\""), false);
-  assert.equal(homeScreen.includes('document.body.dataset.shellReady = "false"'), true);
-  assert.equal(homeScreen.includes('document.body.dataset.shellReady = "true"'), true);
-  assert.equal(homeScreen.includes("isLoading ? \"opacity-0\" : \"opacity-100\""), true);
+  assert.equal(entrance.includes("shouldExit"), true);
+  assert.equal(homeScreen.includes("minLoaderElapsed && heroImageReady"), true);
+  assert.equal(homeScreen.includes("onHeroImageReady"), true);
+  assert.equal(homeScreen.includes("setHeroImageReady(true)"), true);
+  assert.equal(homeScreen.includes('showLoader ? "opacity-0" : "opacity-100"'), false);
 });
 
-test("home screen always replays entrance loading and locks scroll while loading", () => {
+test("home screen keeps content visible while entrance loader overlays briefly", () => {
   const homeScreen = read("src/features/home/hero/containers/HomeScreen.tsx");
 
   assert.equal(homeScreen.includes("sessionStorage"), false);
@@ -68,6 +68,7 @@ test("home screen always replays entrance loading and locks scroll while loading
   assert.equal(homeScreen.includes("EntranceLoader"), true);
   assert.equal(homeScreen.includes("scrollRestoration"), true);
   assert.equal(homeScreen.includes("window.scrollTo({ top: 0, behavior: \"auto\" })"), false);
-  assert.equal(homeScreen.includes('document.body.style.overflow = "hidden"'), true);
-  assert.equal(homeScreen.includes('document.body.style.overflow = ""'), true);
+  assert.equal(homeScreen.includes('document.body.style.overflow = "hidden"'), false);
+  assert.equal(homeScreen.includes('document.body.style.overflow = ""'), false);
+  assert.equal(homeScreen.includes("<HeroAboutTransition"), true);
 });

@@ -35,20 +35,21 @@ export default function MobileNavbar({
   useEffect(() => {
     const handleScroll = () => {
       const sections = navItems.map((item) => item.href.substring(1));
+      let currentItem = "Home";
 
       for (const section of sections) {
         const element = document.getElementById(section);
         if (element) {
           const rect = element.getBoundingClientRect();
           if (rect.top <= 220 && rect.bottom >= 220) {
-            setActiveTab(
+            currentItem =
               navItems.find((item) => item.href === `#${section}`)?.name ||
-                "Home"
-            );
-            break;
+              currentItem;
           }
         }
       }
+
+      setActiveTab(currentItem);
     };
 
     handleScroll();

@@ -1,8 +1,9 @@
 export const contactData = {
-  title: "Get In Touch",
-  subtitle: "Let's work together",
-  description: "Have a project in mind or want to collaborate? Feel free to reach out. I'm always open to discussing new opportunities.",
-  email: "grackrev@gmail.com",
+  title: "Get in Touch",
+  subtitle: "",
+  description:
+    "If the work feels aligned with what you are building, send a message. Clear ideas, rough directions, and serious opportunities are all welcome.",
+  email: "alfitsani.10@gmail.com",
   location: "Malang, East Java, Indonesia",
   socials: [
     {

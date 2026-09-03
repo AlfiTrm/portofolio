@@ -48,88 +48,12 @@
 }
 
 html, body {
-  background: #000000;
+  background: var(--stage-background);
   color: #ffffff;
 }
 
 body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-}
-
-body[data-shell-ready="false"] {
-  overflow: hidden;
-}
-
-#preload-shell {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background:
-    radial-gradient(circle at center, rgba(255, 255, 255, 0.08), transparent 26%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 24%),
-    #000000;
-  transition: opacity 320ms ease, visibility 320ms ease;
-}
-
-#preload-shell::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0.2;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 4px 4px, 6px 6px;
-  pointer-events: none;
-}
-
-body[data-shell-ready="true"] #preload-shell {
-  opacity: 0;
-  visibility: hidden;
-}
-
-.preload-shell__bars {
-  display: flex;
-  align-items: flex-end;
-  gap: 1.5rem;
-}
-
-.preload-shell__bar {
-  width: 3rem;
-  height: 8rem;
-  border-radius: 0.35rem;
-  background: rgba(255, 255, 255, 0.28);
-  animation: preloadBar 1.35s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-.preload-shell__bar--2 {
-  animation-delay: 0.16s;
-}
-
-.preload-shell__bar--3 {
-  animation-delay: 0.32s;
-}
-
-@keyframes preloadBar {
-  0%,
-  100% {
-    transform: translateY(12px);
-    opacity: 0.5;
-  }
-  50% {
-    transform: translateY(-16px);
-    opacity: 1;
-  }
-}
-
-@media (min-width: 768px) {
-  .preload-shell__bar {
-    width: 3.5rem;
-    height: 10rem;
-  }
 }
 
 /* Smooth scrolling */
@@ -293,16 +217,6 @@ html {
   }
 }
 
-/* Custom Cursor Logic */
-@media (min-width: 768px) and (hover: hover) and (pointer: fine) {
-  body,
-  a,
-  button,
-  [role="button"] {
-    cursor: none !important;
-  }
-}
-
 /* Tech Stack Scroll Animation */
 @keyframes techScroll {
   0% {
@@ -314,7 +228,8 @@ html {
 }
 
 :root {
-  --background: oklch(1 0 0);
+  --stage-background: #12110d;
+  --background: #12110d;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -392,4 +307,8 @@ html {
   html {
     @apply font-sans;
   }
+}
+
+.bg-stage {
+  background: var(--stage-background);
 }

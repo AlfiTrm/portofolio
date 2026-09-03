@@ -1,6 +1,7 @@
 "use client";
 
 import { Icon } from "@iconify/react";
+import { motion, type MotionStyle } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -28,30 +29,49 @@ const navContact = navItems.filter((item) => item.group === "contact");
 
 interface NavbarProps {
   onOpenResume?: () => void;
+  tone?: "light" | "dark";
+  style?: MotionStyle;
+  className?: string;
 }
 
-export default function Navbar({ onOpenResume: _onOpenResume }: NavbarProps) {
+export default function Navbar({
+  onOpenResume: _onOpenResume,
+  tone = "light",
+  style,
+  className = "",
+}: NavbarProps) {
   const [activeItem, setActiveItem] = useState("Home");
   const [scrolled, setScrolled] = useState(false);
+  const isDark = tone === "dark";
+  const activeText = isDark ? "text-black" : "text-[#f2ede6]";
+  const inactiveText = isDark
+    ? "text-black/34 hover:text-black/68"
+    : "text-white/42 hover:text-white/72";
+  const brandText = isDark ? "text-black" : "text-[#f2ede6]";
+  const focusRing = isDark
+    ? "focus-visible:ring-black/50 focus-visible:ring-offset-[#f2ede6]"
+    : "focus-visible:ring-white/60 focus-visible:ring-offset-black";
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 40);
 
       const sections = navItems.map((item) => item.href.substring(1));
+      let currentItem = "Home";
+
       for (const section of sections) {
         const element = document.getElementById(section);
         if (element) {
           const rect = element.getBoundingClientRect();
           if (rect.top <= 220 && rect.bottom >= 220) {
-            setActiveItem(
+            currentItem =
               navItems.find((item) => item.href === `#${section}`)?.name ||
-                "Home"
-            );
-            break;
+              currentItem;
           }
         }
       }
+
+      setActiveItem(currentItem);
     };
 
     handleScroll();
@@ -77,16 +97,16 @@ export default function Navbar({ onOpenResume: _onOpenResume }: NavbarProps) {
               onClick={() => handleNavClick(item.href)}
               role="menuitem"
               aria-current={isActive ? "page" : undefined}
-              className={`relative uppercase text-[0.68rem] xl:text-[0.72rem] leading-none transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
+              className={`relative uppercase text-[0.68rem] xl:text-[0.72rem] leading-none transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${focusRing} ${
                 isActive
-                  ? "text-[#f2ede6] tracking-[0.18em] font-medium"
-                  : "text-white/42 tracking-[0.24em] hover:text-white/72"
+                  ? `${activeText} tracking-[0.18em] font-medium`
+                  : `${inactiveText} tracking-[0.24em]`
               }`}
             >
               {isActive && (
                 <Icon
                   icon="iconoir:spark-solid"
-                  className="absolute -left-4 top-1/2 text-[0.78rem] -translate-y-1/2 text-[#f2ede6]"
+                  className={`absolute -left-4 top-1/2 text-[0.78rem] -translate-y-1/2 ${activeText}`}
                 />
               )}
               {item.label}
@@ -106,8 +126,9 @@ export default function Navbar({ onOpenResume: _onOpenResume }: NavbarProps) {
         Skip to main content
       </a>
 
-      <nav
-        className="hidden md:flex fixed top-0 left-0 right-0 z-50 justify-center px-6 xl:px-10 pointer-events-none"
+      <motion.nav
+        style={style}
+        className={`hidden md:flex fixed top-0 left-0 right-0 z-50 justify-center px-6 xl:px-10 pointer-events-none ${className}`}
         role="navigation"
         aria-label="Main navigation"
       >
@@ -118,7 +139,7 @@ export default function Navbar({ onOpenResume: _onOpenResume }: NavbarProps) {
         >
           <Link
             href="/"
-            className="shrink-0 text-[1.45rem] leading-none tracking-[0.02em] text-[#f2ede6] transition-opacity duration-300 hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-sm [font-family:var(--font-akira)]"
+            className={`shrink-0 text-[1.45rem] leading-none tracking-[0.02em] ${brandText} transition-opacity duration-300 hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${focusRing} rounded-sm [font-family:var(--font-akira)]`}
             aria-label="Tsan - Home"
           >
             Tsan
@@ -132,7 +153,7 @@ export default function Navbar({ onOpenResume: _onOpenResume }: NavbarProps) {
             <div className="pt-[0.9rem]">{renderNavGroup(navContact)}</div>
           </div>
         </div>
-      </nav>
+      </motion.nav>
     </>
   );
 }
