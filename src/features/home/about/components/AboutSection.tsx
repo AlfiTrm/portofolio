@@ -1,4 +1,4 @@
-import ExperienceTimeline from "../components/ExperienceTimeline";
+import ExperienceTimeline from "./ExperienceTimeline";
 import "../styles/about.css";
 
 export default function AboutSection() {

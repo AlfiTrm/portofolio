@@ -4,10 +4,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-interface MobileNavbarProps {
-  onOpenResume?: () => void;
-}
-
 const navItems = [
   { name: "Home", label: "Home", href: "#home", group: "primary" },
   { name: "About", label: "About", href: "#about", group: "primary" },
@@ -26,9 +22,7 @@ const navItems = [
   { name: "Contact", label: "Contact", href: "#contact", group: "contact" },
 ];
 
-export default function MobileNavbar({
-  onOpenResume: _onOpenResume,
-}: MobileNavbarProps) {
+export default function MobileNavbar({ className = "" }: { className?: string }) {
   const [activeTab, setActiveTab] = useState("Home");
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -76,7 +70,7 @@ export default function MobileNavbar({
         initial={{ y: -18, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="md:hidden fixed top-0 left-0 right-0 z-50 px-5 pt-5"
+        className={`md:hidden fixed top-0 left-0 right-0 z-50 px-5 pt-5 ${className}`}
       >
         <div className="flex items-start justify-between">
           <Link

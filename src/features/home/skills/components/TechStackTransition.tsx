@@ -6,9 +6,9 @@ import {
   useMotionValue,
   useSpring,
 } from "framer-motion";
-import { techStack } from "@/features/home/hero/data/techStack";
+import { techStack } from "@/features/home/data/techStack";
 import React, { useEffect, useRef, useState } from "react";
-import useShouldSkipInitialEntrance from "@/shared/hooks/useShouldSkipInitialEntrance";
+import useShouldSkipInitialEntrance from "@/features/home/hooks/useShouldSkipInitialEntrance";
 import {
   SiNextdotjs,
   SiTypescript,

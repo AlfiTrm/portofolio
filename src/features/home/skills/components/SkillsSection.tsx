@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import ScrollReveal from "@/shared/components/ScrollReveal";
+import ScrollReveal from "@/shared/components/motion/ScrollReveal";
 import { skillsData } from "../data/skillsData";
 import "../styles/skills.css";
 

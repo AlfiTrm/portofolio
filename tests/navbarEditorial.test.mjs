@@ -8,7 +8,7 @@ function read(relativePath) {
 }
 
 test("desktop navbar uses editorial split layout and Tsan wordmark", () => {
-  const source = read("src/shared/components/Navbar.tsx");
+  const source = read("src/shared/components/layout/Navbar.tsx");
 
   assert.equal(source.includes("Tsan"), true);
   assert.equal(source.includes("rounded-full border"), false);
@@ -30,7 +30,7 @@ test("desktop navbar uses editorial split layout and Tsan wordmark", () => {
 });
 
 test("desktop navbar active state follows in-view section instead of click target", () => {
-  const source = read("src/shared/components/Navbar.tsx");
+  const source = read("src/shared/components/layout/Navbar.tsx");
 
   assert.equal(source.includes("setActiveItem(name)"), false);
   assert.equal(
@@ -41,7 +41,7 @@ test("desktop navbar active state follows in-view section instead of click targe
 });
 
 test("mobile navbar no longer uses bottom dock navigation", () => {
-  const source = read("src/shared/components/MobileNavbar.tsx");
+  const source = read("src/shared/components/layout/MobileNavbar.tsx");
 
   assert.equal(source.includes("fixed bottom-0"), false);
   assert.equal(source.includes("Tsan"), true);
@@ -50,7 +50,7 @@ test("mobile navbar no longer uses bottom dock navigation", () => {
 });
 
 test("mobile navbar active state follows in-view section instead of click target", () => {
-  const source = read("src/shared/components/MobileNavbar.tsx");
+  const source = read("src/shared/components/layout/MobileNavbar.tsx");
 
   assert.equal(source.includes("setActiveTab(name)"), false);
   assert.equal(

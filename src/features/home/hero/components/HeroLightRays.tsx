@@ -1,7 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { heroEntranceTiming } from "../constants/entrance";
+
+const raysDelay = 0.48;
+const raysDuration = 1.25;
 
 export default function HeroLightRays({ isActive = true }: { isActive?: boolean }) {
   return (
@@ -10,8 +12,8 @@ export default function HeroLightRays({ isActive = true }: { isActive?: boolean 
       initial={{ opacity: 0, y: -18, scaleY: 0.92 }}
       animate={isActive ? { opacity: 0.95, y: 0, scaleY: 1 } : { opacity: 0, y: -18, scaleY: 0.92 }}
       transition={{
-        delay: heroEntranceTiming.raysDelay,
-        duration: heroEntranceTiming.raysDuration,
+        delay: raysDelay,
+        duration: raysDuration,
         ease: [0.22, 1, 0.36, 1],
       }}
       aria-hidden="true"
@@ -21,7 +23,7 @@ export default function HeroLightRays({ isActive = true }: { isActive?: boolean 
         initial={{ opacity: 0, scale: 0.82 }}
         animate={isActive ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.82 }}
         transition={{
-          delay: heroEntranceTiming.raysDelay + 0.06,
+          delay: raysDelay + 0.06,
           duration: 1,
           ease: [0.22, 1, 0.36, 1],
         }}

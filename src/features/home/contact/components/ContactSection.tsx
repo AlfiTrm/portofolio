@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import React from "react";
-import ScrollReveal from "@/shared/components/ScrollReveal";
+import ScrollReveal from "@/shared/components/motion/ScrollReveal";
 import { contactData } from "../data/contactData";
 import "../styles/contact.css";
 

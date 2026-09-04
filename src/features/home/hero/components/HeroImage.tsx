@@ -2,14 +2,15 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { heroEntranceTiming } from "../constants/entrance";
+
+const portraitDelay = 0.76;
+const portraitDuration = 2.15;
 
 interface HeroImageProps {
   src: string;
   alt: string;
   className?: string;
   isActive?: boolean;
-  onReady?: () => void;
 }
 
 export default function HeroImage({
@@ -17,7 +18,6 @@ export default function HeroImage({
   alt,
   className = "",
   isActive = true,
-  onReady,
 }: HeroImageProps) {
   return (
     <div
@@ -31,8 +31,8 @@ export default function HeroImage({
         initial={{ opacity: 0 }}
         animate={isActive ? { opacity: 1 } : { opacity: 0 }}
         transition={{
-          delay: heroEntranceTiming.portraitDelay,
-          duration: heroEntranceTiming.portraitDuration,
+          delay: portraitDelay,
+          duration: portraitDuration,
           ease: [0.22, 1, 0.36, 1],
         }}
       >
@@ -45,8 +45,8 @@ export default function HeroImage({
               : { filter: "brightness(0.42)" }
           }
           transition={{
-            delay: heroEntranceTiming.portraitDelay + 0.08,
-            duration: heroEntranceTiming.portraitDuration,
+            delay: portraitDelay + 0.08,
+            duration: portraitDuration,
             ease: [0.22, 1, 0.36, 1],
           }}
         >
@@ -57,7 +57,6 @@ export default function HeroImage({
             priority
             sizes="100vw"
             className="object-contain object-top"
-            onLoad={onReady}
           />
         </motion.div>
       </motion.div>
@@ -67,8 +66,8 @@ export default function HeroImage({
         initial={{ opacity: 1 }}
         animate={isActive ? { opacity: 0.72 } : { opacity: 1 }}
         transition={{
-          delay: heroEntranceTiming.portraitDelay,
-          duration: heroEntranceTiming.portraitDuration,
+          delay: portraitDelay,
+          duration: portraitDuration,
           ease: [0.22, 1, 0.36, 1],
         }}
       />
@@ -77,8 +76,8 @@ export default function HeroImage({
         initial={{ opacity: 0.9 }}
         animate={isActive ? { opacity: 1 } : { opacity: 0.9 }}
         transition={{
-          delay: heroEntranceTiming.portraitDelay + 0.04,
-          duration: heroEntranceTiming.portraitDuration,
+          delay: portraitDelay + 0.04,
+          duration: portraitDuration,
           ease: [0.22, 1, 0.36, 1],
         }}
       />

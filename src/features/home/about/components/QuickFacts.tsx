@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
-import ScrollReveal from "@/shared/components/ScrollReveal";
+import ScrollReveal from "@/shared/components/motion/ScrollReveal";
 
 const facts = [
   { id: 1, icon: "☕", label: "coffee addict" },
