@@ -34,7 +34,7 @@ export default function HeroPortraitLayer({
       >
         <motion.div className="absolute inset-0" style={{ opacity: colorOpacity }}>
           <Image
-            src="/hero/picture-me.webp"
+            src="/home/picture-me.webp"
             alt=""
             fill
             priority
@@ -48,7 +48,7 @@ export default function HeroPortraitLayer({
           aria-hidden="true"
         >
           <Image
-            src="/hero/picture-me.webp"
+            src="/home/picture-me.webp"
             alt=""
             fill
             sizes="(min-width: 768px) 76vw, 145vw"

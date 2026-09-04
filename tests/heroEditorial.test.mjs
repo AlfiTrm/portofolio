@@ -112,7 +112,7 @@ test("hero about transition pins hero and introduces about copy", () => {
   assert.equal(aboutSource.includes("Alfi"), true);
   assert.equal(aboutSource.includes("Tsani"), true);
   assert.equal(source.includes("aboutData.description"), false);
-  assert.equal(portraitSource.includes("/hero/picture-me.webp"), true);
+  assert.equal(portraitSource.includes("/home/picture-me.webp"), true);
 });
 
 test("navigation can target the pinned about moment inside the hero section", () => {

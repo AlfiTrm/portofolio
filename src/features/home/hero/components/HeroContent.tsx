@@ -36,7 +36,7 @@ export default function HeroContent({
       className="relative z-10 flex min-h-screen items-center overflow-hidden px-5 pt-20 md:px-8 md:pt-24"
     >
       <HeroImage
-        src="/hero/picture-me.webp"
+        src="/home/picture-me.webp"
         alt="Portrait texture"
         isActive={isActive}
       />
