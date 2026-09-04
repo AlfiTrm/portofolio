@@ -87,6 +87,20 @@ export default function HomeScreen() {
     };
   }, []);
 
+  useEffect(() => {
+    const toggleChat = (event: KeyboardEvent) => {
+      if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "k") return;
+
+      event.preventDefault();
+      if (pageReady && entranceState === "ready") {
+        setChatOpen((current) => !current);
+      }
+    };
+
+    window.addEventListener("keydown", toggleChat);
+    return () => window.removeEventListener("keydown", toggleChat);
+  }, [entranceState, pageReady]);
+
   return (
     <SmoothScroll>
       <div className="relative min-h-screen overflow-x-clip bg-stage">
@@ -129,16 +143,19 @@ export default function HomeScreen() {
 
         <button
           type="button"
-          aria-label="Open chat"
+          aria-label={chatOpen ? "Close chat" : "Open chat"}
+          aria-expanded={chatOpen}
           onClick={() => setChatOpen((current) => !current)}
-          className={`fixed bottom-6 right-6 z-[62] hidden items-center gap-2 uppercase text-[0.72rem] tracking-[0.24em] text-white/46 transition-[color,opacity,transform] duration-700 hover:text-white/78 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black md:flex ${
+          className={`group fixed bottom-6 right-6 z-[62] hidden cursor-pointer items-center uppercase text-[0.72rem] tracking-[0.24em] text-white/46 transition-[color,opacity,transform] duration-700 hover:text-white/78 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black md:flex ${
             pageReady && entranceState === "ready"
               ? "translate-y-0 opacity-100"
               : "pointer-events-none translate-y-2 opacity-0"
           }`}
         >
-          <span className="h-2 w-2 rounded-full bg-current" />
-          <span>ask</span>
+          <kbd className="pointer-events-none absolute right-0 bottom-full mb-2 whitespace-nowrap font-mono text-[0.62rem] tracking-[0.08em] text-white/38 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
+            ctrl k
+          </kbd>
+          <span>ask me</span>
         </button>
 
         <FloatingChatSheet

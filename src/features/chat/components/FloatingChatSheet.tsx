@@ -1,15 +1,12 @@
 "use client";
 
-import { Icon } from "@iconify/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 interface FloatingChatSheetProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
-type PromptKey = "know-me" | "start-project";
 
 interface ChatEntry {
   id: string;
@@ -17,38 +14,16 @@ interface ChatEntry {
   content: string;
 }
 
-const promptResponses: Record<PromptKey, string> = {
-  "know-me":
-    "i'm a frontend-focused developer shaping quiet, cinematic interfaces with a strong eye for motion, clarity, and feel.",
-  "start-project":
-    "if you're planning a project, the fastest path is to reach out through contact and share the scope, timeline, and what kind of experience you want to build.",
-};
-
-const panelTransition = { duration: 0.78, ease: [0.16, 1, 0.3, 1] as const };
-const contentTransition = { duration: 0.42, ease: [0.22, 1, 0.36, 1] as const };
+const panelTransition = { duration: 0.32, ease: [0.22, 1, 0.36, 1] as const };
 
 export default function FloatingChatSheet({
   isOpen,
   onClose,
 }: FloatingChatSheetProps) {
   const [messages, setMessages] = useState<ChatEntry[]>([]);
-  const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const [draft, setDraft] = useState("");
+  const [isSending, setIsSending] = useState(false);
   const transcriptEndRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (!isOpen) {
-      setMessages([]);
-      timeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
-      timeoutsRef.current = [];
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    return () => {
-      timeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
-      timeoutsRef.current = [];
-    };
-  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -72,9 +47,46 @@ export default function FloatingChatSheet({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  const appendPrompt = (prompt: PromptKey) => {
-    const userContent = prompt === "know-me" ? "know me" : "start a project";
-    const typingId = `${prompt}-${Date.now()}-${Math.random()}`;
+  const revealAssistantMessage = (id: string, content: string) => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setMessages((current) =>
+        current.map((entry) =>
+          entry.id === id ? { id, role: "assistant", content } : entry
+        ),
+      );
+      return Promise.resolve();
+    }
+
+    return new Promise<void>((resolve) => {
+      let visibleCharacters = 0;
+      const charactersPerTick = Math.max(1, Math.ceil(content.length / 90));
+      const timer = window.setInterval(() => {
+        visibleCharacters = Math.min(visibleCharacters + charactersPerTick, content.length);
+        setMessages((current) =>
+          current.map((entry) =>
+            entry.id === id
+              ? { id, role: "assistant", content: content.slice(0, visibleCharacters) }
+              : entry
+          ),
+        );
+
+        if (visibleCharacters === content.length) {
+          window.clearInterval(timer);
+          resolve();
+        }
+      }, 18);
+    });
+  };
+
+  const sendMessage = async (content: string) => {
+    const userContent = content.trim();
+    if (!userContent || isSending) return;
+
+    const typingId = crypto.randomUUID();
+    const history = messages
+      .filter((entry) => entry.role !== "typing")
+      .slice(-7)
+      .map(({ role, content: messageContent }) => ({ role, content: messageContent }));
 
     setMessages((current) => [
       ...current,
@@ -85,22 +97,38 @@ export default function FloatingChatSheet({
       },
       { id: typingId, role: "typing", content: "" },
     ]);
+    setDraft("");
+    setIsSending(true);
 
-    const timeout = setTimeout(() => {
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [...history, { role: "user", content: userContent }],
+        }),
+      });
+      const data = (await response.json()) as { message?: string; error?: string };
+
+      if (!response.ok || !data.message) throw new Error(data.error);
+
+      await revealAssistantMessage(typingId, data.message);
+    } catch {
       setMessages((current) =>
         current.map((entry) =>
           entry.id === typingId
-            ? {
-                id: typingId,
-                role: "assistant",
-                content: promptResponses[prompt],
-              }
-            : entry
-        )
+            ? { id: typingId, role: "assistant", content: "i couldn't reach the assistant. please try again." }
+            : entry,
+        ),
       );
-    }, 950);
+    } finally {
+      setIsSending(false);
+    }
+  };
 
-    timeoutsRef.current.push(timeout);
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    void sendMessage(draft);
   };
 
   return (
@@ -114,96 +142,53 @@ export default function FloatingChatSheet({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 z-[69] bg-black/16"
+            className="fixed inset-0 z-[69] bg-black/10"
           />
 
           <motion.aside
-            initial={{
-              opacity: 0,
-              scale: 0.72,
-              x: 64,
-              y: 56,
-              rotateX: 18,
-              rotateY: -20,
-              skewX: -6,
-            }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-              x: 0,
-              y: 0,
-              rotateX: 0,
-              rotateY: 0,
-              skewX: 0,
-            }}
-            exit={{
-              opacity: 0,
-              scale: 0.78,
-              x: 52,
-              y: 34,
-              rotateX: 10,
-              rotateY: -12,
-              skewX: -4,
-            }}
-            transition={{ ...panelTransition, delay: 0.18 }}
-            style={{ transformOrigin: "bottom right" }}
-            className="fixed bottom-20 right-5 z-[70] flex h-[33rem] w-[22.5rem] max-w-[calc(100vw-1.5rem)] flex-col overflow-hidden rounded-[1.45rem] border border-white/10 bg-[#090909]/95 shadow-[0_34px_110px_rgba(0,0,0,0.58)] md:bottom-20 md:right-6 md:w-[24.5rem]"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={panelTransition}
+            className="fixed bottom-16 right-3 z-[70] flex h-[32rem] w-[calc(100vw-1.5rem)] max-w-[24rem] flex-col overflow-hidden rounded-lg border border-[#efe6d1]/18 bg-[#090909] font-mono text-[#efe6d1] md:bottom-20 md:right-6"
           >
-            <motion.div
-              initial={{ opacity: 0.82, scaleY: 0.08, y: 22 }}
-              animate={{ opacity: 0, scaleY: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.58, ease: [0.18, 1, 0.32, 1] }}
-              style={{ transformOrigin: "bottom right" }}
-              className="pointer-events-none absolute inset-0 z-10 rounded-[1.45rem] border border-white/12 bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.02)_22%,rgba(255,255,255,0)_54%)]"
-            />
-
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-              transition={{ delay: 0.24, ...contentTransition }}
-              className="relative z-20 flex items-center justify-between border-b border-white/8 px-4 py-3"
-            >
-              <div className="flex items-center gap-2 text-[0.76rem] tracking-[0.02em] text-[#efe6d1]/76">
-                <Icon icon="iconoir:spark-solid" className="text-[0.9rem]" />
-                <span>ask tsan</span>
+            <div className="flex items-center justify-between border-b border-[#efe6d1]/12 px-4 py-3 text-xs">
+              <div className="flex items-center gap-2 text-[#efe6d1]/70">
+                <span className="h-1.5 w-1.5 bg-[#efe6d1]" />
+                <span>tsan@portfolio:~/chatbot</span>
               </div>
 
               <button
                 type="button"
                 onClick={onClose}
-                className="text-[0.72rem] tracking-[0.02em] text-white/44 transition-colors duration-300 hover:text-white/78"
+                className="text-[#efe6d1]/40 transition-colors hover:text-[#efe6d1] focus:outline-none focus-visible:text-[#efe6d1]"
               >
-                close
+                [esc]
               </button>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-              transition={{ delay: 0.3, ...contentTransition }}
-              className="relative z-20 flex-1 space-y-4 overflow-y-auto px-4 py-4"
-            >
-              <div className="max-w-[87%] rounded-[1.15rem] rounded-bl-md bg-white/[0.05] px-4 py-3 text-[0.95rem] leading-[1.55] text-[#efe6d1]/88">
-                {"if you're curious, i can help you start in one of two ways."}
+            <div className="flex-1 space-y-5 overflow-y-auto px-4 py-5 text-sm leading-relaxed">
+              <div className="max-w-[34ch] text-[#efe6d1]/65">
+                <span className="mr-2 text-[#efe6d1]">tsan&gt;</span>
+                ask about my work, skills, or collaboration.
               </div>
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs">
                 <button
                   type="button"
-                  onClick={() => appendPrompt("know-me")}
-                  className="rounded-full border border-white/10 px-3 py-2 text-[0.76rem] tracking-[0.01em] text-white/62 transition-colors duration-300 hover:border-white/18 hover:text-white/86"
+                  onClick={() => void sendMessage("Tell me about Alfi")}
+                  disabled={isSending}
+                  className="text-[#efe6d1]/45 transition-colors hover:text-[#efe6d1] disabled:opacity-30"
                 >
-                  know me
+                  /about
                 </button>
                 <button
                   type="button"
-                  onClick={() => appendPrompt("start-project")}
-                  className="rounded-full border border-white/10 px-3 py-2 text-[0.76rem] tracking-[0.01em] text-white/62 transition-colors duration-300 hover:border-white/18 hover:text-white/86"
+                  onClick={() => void sendMessage("How can I start a project with Alfi?")}
+                  disabled={isSending}
+                  className="text-[#efe6d1]/45 transition-colors hover:text-[#efe6d1] disabled:opacity-30"
                 >
-                  start a project
+                  /collaborate
                 </button>
               </div>
 
@@ -211,65 +196,55 @@ export default function FloatingChatSheet({
                 {messages.map((entry, index) => (
                   <motion.div
                     key={`${entry.id}-${index}`}
-                    initial={{ opacity: 0, y: 14, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 8 }}
-                    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
                     className={
                       entry.role === "user"
-                        ? "ml-auto max-w-[78%] rounded-[1.15rem] rounded-br-md bg-[#efe6d1] px-4 py-3 text-[0.82rem] leading-[1.4] text-black"
+                        ? "-mx-4 whitespace-pre-wrap break-words bg-[#2b2b2b] px-4 py-3 text-[#efe6d1]"
                         : entry.role === "typing"
-                          ? "max-w-[5.5rem] rounded-[1.15rem] rounded-bl-md bg-white/[0.05] px-4 py-3"
+                          ? "text-[#efe6d1]/55"
                           : entry.role === "assistant"
-                          ? "max-w-[88%] rounded-[1.15rem] rounded-bl-md bg-white/[0.05] px-4 py-3 text-[0.93rem] leading-[1.55] text-[#efe6d1]/84"
+                          ? "max-w-[38ch] whitespace-pre-wrap break-words text-[#efe6d1]/72"
                           : ""
                     }
                   >
                     {entry.role === "typing" ? (
-                      <div className="flex items-center gap-1.5">
-                        {[0, 1, 2].map((bar) => (
-                          <motion.span
-                            key={bar}
-                            className="h-5 w-1.5 bg-[#efe6d1]/56"
-                            animate={{ opacity: [0.36, 1, 0.36], y: [4, -4, 4] }}
-                            transition={{
-                              duration: 1.05,
-                              repeat: Infinity,
-                              ease: "easeInOut",
-                              delay: bar * 0.14,
-                            }}
-                          />
-                        ))}
-                      </div>
+                      <><span className="mr-2 text-[#efe6d1]">tsan&gt;</span><span className="animate-pulse">_</span></>
                     ) : (
-                      entry.content
+                      <><span className="mr-2 text-[#efe6d1]">{entry.role === "user" ? "you>" : "tsan>"}</span>{entry.content}</>
                     )}
                   </motion.div>
                 ))}
               </AnimatePresence>
 
               <div ref={transcriptEndRef} />
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-              transition={{ delay: 0.38, ...contentTransition }}
-              className="relative z-20 border-t border-white/8 px-4 py-3"
-            >
-              <div className="flex items-center gap-3 rounded-[1rem] border border-white/10 bg-white/[0.03] px-3 py-3">
+            <div className="border-t border-[#efe6d1]/12 px-4 py-3">
+              <form
+                onSubmit={handleSubmit}
+                className="flex items-center gap-2"
+              >
+                <span aria-hidden="true" className="text-sm text-[#efe6d1]">&gt;</span>
                 <input
-                  disabled
-                  value=""
-                  placeholder="chat is on its way"
-                  className="w-full bg-transparent text-[0.86rem] text-white/38 outline-none placeholder:text-white/28"
+                  value={draft}
+                  onChange={(event) => setDraft(event.target.value)}
+                  disabled={isSending}
+                  maxLength={500}
+                  placeholder="ask about Alfi"
+                  className="w-full bg-transparent text-sm text-[#efe6d1] outline-none placeholder:text-[#efe6d1]/25"
                 />
-                <span className="text-[0.72rem] tracking-[0.01em] text-white/28">
-                  soon
-                </span>
-              </div>
-            </motion.div>
+                <button
+                  type="submit"
+                  disabled={isSending || !draft.trim()}
+                  className="text-xs text-[#efe6d1]/45 transition-colors hover:text-[#efe6d1] disabled:text-[#efe6d1]/15"
+                >
+                  [enter]
+                </button>
+              </form>
+            </div>
           </motion.aside>
         </>
       )}
