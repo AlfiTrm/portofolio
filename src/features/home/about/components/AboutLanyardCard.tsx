@@ -4,7 +4,7 @@ import { Icon } from "@iconify/react";
 import { motion, useMotionValue } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import useShouldSkipInitialEntrance from "@/shared/hooks/useShouldSkipInitialEntrance";
+import useShouldSkipInitialEntrance from "@/features/home/hooks/useShouldSkipInitialEntrance";
 import AboutNightBackdrop from "./AboutNightBackdrop";
 
 export default function AboutLanyardCard() {

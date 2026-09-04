@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { techStack } from "@/features/home/hero/data/techStack";
+import { techStack } from "@/features/home/data/techStack";
 import BodyLineReveal from "@/shared/components/text/BodyLineReveal";
 import MetaLabelReveal from "@/shared/components/text/MetaLabelReveal";
 

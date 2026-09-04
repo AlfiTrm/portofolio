@@ -1,6 +1,6 @@
 export const projectsData = {
-  title: "Selected Work",
-  subtitle: "A few builds that say enough",
+  title: "What I've Been Building",
+  subtitle: "A compact record of interfaces I helped ship, refine, or make easier to trust.",
   projects: [
     {
       id: 1,

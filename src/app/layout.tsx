@@ -8,8 +8,7 @@ import {
 } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
-import "../styles/globals.css";
-import PreloadShellDismiss from "@/shared/components/PreloadShellDismiss";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -99,8 +98,6 @@ export const metadata: Metadata = {
   },
 };
 
-import CustomCursor from "@/shared/components/CustomCursor";
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -109,18 +106,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        data-shell-ready="false"
         className={`${geistSans.variable} ${geistMono.variable} ${climateCrisis.variable} ${cormorantGaramond.variable} ${akiraExpanded.variable} antialiased`}
       >
-        <div id="preload-shell" aria-hidden="true">
-          <div className="preload-shell__bars">
-            <span className="preload-shell__bar preload-shell__bar--1" />
-            <span className="preload-shell__bar preload-shell__bar--2" />
-            <span className="preload-shell__bar preload-shell__bar--3" />
-          </div>
-        </div>
-        <PreloadShellDismiss />
-        <CustomCursor />
         <SpeedInsights />
         <Analytics />
         {children}

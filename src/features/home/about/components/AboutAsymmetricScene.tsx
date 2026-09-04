@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useRef } from "react";
 import HeadlineReveal from "@/shared/components/text/HeadlineReveal";
 import BodyLineReveal from "@/shared/components/text/BodyLineReveal";
-import useShouldSkipInitialEntrance from "@/shared/hooks/useShouldSkipInitialEntrance";
+import useShouldSkipInitialEntrance from "@/features/home/hooks/useShouldSkipInitialEntrance";
 import AboutLanyardCard from "./AboutLanyardCard";
 import AboutStoryText from "./AboutStoryText";
 
