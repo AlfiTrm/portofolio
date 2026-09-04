@@ -55,7 +55,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
               <div className="flex-1 bg-neutral-900 relative overflow-hidden">
                 <iframe
-                  src="/CV.pdf"
+                  src="/home/file/CV_Alfi.pdf"
                   className="w-full h-full border-none"
                   title="CV Preview"
                 />
@@ -63,7 +63,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
               <div className="p-4 md:p-6 border-t border-white/10 bg-white/5 flex flex-col md:flex-row gap-4 items-center justify-end">
                 <a
-                  href="/CV.pdf"
+                  href="/home/file/CV_Alfi.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full md:w-auto px-6 py-3 rounded-xl border border-white/10 hover:bg-white/5 text-white/70 hover:text-white transition-all flex items-center justify-center gap-2 font-medium"
@@ -73,7 +73,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                 </a>
 
                 <a
-                  href="/CV.pdf"
+                  href="/home/file/CV_Alfi.pdf"
                   download="CV_Alfi_Tsani.pdf"
                   className="w-full md:w-auto px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black transition-all flex items-center justify-center gap-2 font-bold shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:shadow-[0_0_30px_rgba(34,211,238,0.5)]"
                 >

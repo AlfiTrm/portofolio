@@ -15,9 +15,9 @@ const navItems = [
     group: "secondary",
   },
   {
-    name: "Recognition",
-    label: "Recognition",
-    href: "#recognition",
+    name: "Exploring",
+    label: "Exploring",
+    href: "#exploring",
     group: "secondary",
   },
   { name: "Contact", label: "Contact", href: "#contact", group: "contact" },
@@ -28,14 +28,12 @@ const navSecondary = navItems.filter((item) => item.group === "secondary");
 const navContact = navItems.filter((item) => item.group === "contact");
 
 interface NavbarProps {
-  onOpenResume?: () => void;
   tone?: "light" | "dark";
   style?: MotionStyle;
   className?: string;
 }
 
 export default function Navbar({
-  onOpenResume: _onOpenResume,
   tone = "light",
   style,
   className = "",

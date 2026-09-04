@@ -45,7 +45,7 @@ test("home screen no longer renders gamey hero companions", () => {
   assert.equal(source.includes("document.fonts.ready"), true);
   assert.equal(source.includes("requestAnimationFrame"), true);
   assert.equal(source.includes("isReady={pageReady}"), true);
-  assert.equal(source.includes('className="mix-blend-difference"'), true);
+  assert.equal(source.includes("mix-blend-difference transition-opacity"), true);
   assert.equal(source.includes("ask"), true);
   assert.equal(source.includes("iconoir:spark-solid"), false);
   assert.equal(source.includes("FloatingChatSheet"), true);

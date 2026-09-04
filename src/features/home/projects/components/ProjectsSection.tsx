@@ -17,9 +17,10 @@ export default function ProjectsSection() {
     target: chapterRef,
     offset: ["start start", "end end"],
   });
-  const curtainY = useTransform(scrollYProgress, [0.3, 0.72], ["100%", "0%"]);
-  const firstLineX = useTransform(scrollYProgress, [0, 0.28], ["-12vw", "0vw"]);
-  const secondLineX = useTransform(scrollYProgress, [0, 0.28], ["12vw", "0vw"]);
+  const leftPanelY = useTransform(scrollYProgress, [0.24, 0.7], ["0%", "-110%"]);
+  const rightPanelY = useTransform(scrollYProgress, [0.3, 0.76], ["0%", "-110%"]);
+  const firstLineX = useTransform(scrollYProgress, [0, 0.38], ["-100vw", "0vw"]);
+  const secondLineX = useTransform(scrollYProgress, [0, 0.38], ["100vw", "0vw"]);
   const titleY = useTransform(scrollYProgress, [0.72, 0.92], ["0vh", "-24vh"]);
   const titleOpacity = useTransform(
     scrollYProgress,
@@ -28,12 +29,10 @@ export default function ProjectsSection() {
   );
 
   return (
-    <section
-      className="relative bg-black"
-    >
+    <section id="projects" className="relative -mt-[6vh] bg-black">
       <div className="sticky top-0 z-30 h-screen pointer-events-none">
         <motion.h2
-          className="relative z-10 flex h-full flex-col justify-center px-5 text-[#f2ede6] [-webkit-text-stroke:clamp(2px,0.22vw,4px)_#111111] [paint-order:stroke_fill] md:px-10"
+          className="relative z-10 flex h-full flex-col justify-center px-5 text-[#f2ede6] [text-shadow:0.06em_0.06em_0_#111111] md:px-10"
           style={{
             opacity: reduceMotion ? 1 : titleOpacity,
             y: reduceMotion ? 0 : titleY,
@@ -55,18 +54,23 @@ export default function ProjectsSection() {
       </div>
 
       <div className="-mt-[100vh]">
-        <div ref={chapterRef} className="relative h-[220vh] bg-[#f2ede6]">
-        <div className="sticky top-0 h-screen overflow-hidden">
-          <motion.div
-            className="absolute inset-0 bg-black"
-            style={{ y: reduceMotion ? 0 : curtainY }}
-            aria-hidden="true"
-          />
-        </div>
+        <div ref={chapterRef} className="relative h-[220vh] bg-black">
+          <div className="sticky top-0 h-screen overflow-hidden">
+            <motion.div
+              className="absolute -inset-[12%] right-[45%] w-[68%] rotate-[-4deg] bg-[#f2ede6]"
+              style={{ y: reduceMotion ? 0 : leftPanelY }}
+              aria-hidden="true"
+            />
+            <motion.div
+              className="absolute -inset-[12%] left-[45%] w-[68%] rotate-[4deg] bg-[#f2ede6]"
+              style={{ y: reduceMotion ? 0 : rightPanelY }}
+              aria-hidden="true"
+            />
+          </div>
         </div>
 
-        <div id="projects" className="relative z-40 -mt-[60vh]">
-          <div className="mx-auto max-w-6xl px-4 py-28 md:px-8 md:py-40">
+        <div className="relative z-40 -mt-[60vh]">
+          <div className="mx-auto max-w-6xl px-4 pb-12 pt-28 md:px-8 md:pb-16 md:pt-40">
             <div className="space-y-24 md:space-y-36">
               {projectsData.projects.map((project, index) => (
                 <ProjectCard

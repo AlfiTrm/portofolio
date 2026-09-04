@@ -14,13 +14,21 @@ import TransitionFrames from "@/features/home/components/TransitionFrames";
 import HeroLightRays from "./HeroLightRays";
 import HeroPortraitLayer from "./HeroPortraitLayer";
 import HeroCopy from "./HeroCopy";
+import HeroEntrance from "./HeroEntrance";
 
 interface HeroAboutTransitionProps {
   isReady?: boolean;
+  entranceState: "checking" | "playing" | "ready";
+  onEntranceComplete: () => void;
   onOpenResume?: () => void;
 }
 
-export default function HeroAboutTransition({ isReady = true, onOpenResume }: HeroAboutTransitionProps) {
+export default function HeroAboutTransition({
+  isReady = true,
+  entranceState,
+  onEntranceComplete,
+  onOpenResume,
+}: HeroAboutTransitionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const [renderRays, setRenderRays] = useState(true);
   const reduceMotion = useReducedMotion();
@@ -69,14 +77,15 @@ export default function HeroAboutTransition({ isReady = true, onOpenResume }: He
     useTransform(scrollYProgress, [0.73, 0.79], [0.42, 1]),
     useTransform(scrollYProgress, [0.79, 0.85], [0.42, 1]),
   ] as const;
-  const portraitOpacity = useTransform(scrollYProgress, [0, 0.78, 0.91], [1, 1, 0]);
+  const portraitOpacity = useTransform(scrollYProgress, [0, 1], [1, 1]);
   const portraitColorOpacity = useTransform(scrollYProgress, [0.28, 0.76], [1, 0]);
   const portraitMonoOpacity = useTransform(scrollYProgress, [0.28, 0.76], [0, 1]);
   const revealTransition = {
     duration: reduceMotion ? 0 : 0.7,
     ease: [0.16, 1, 0.3, 1] as const,
   };
-  const revealState = isReady
+  const heroReady = isReady && entranceState === "ready";
+  const revealState = heroReady
     ? { opacity: 1, y: 0 }
     : { opacity: 0, y: reduceMotion ? 0 : 14 };
 
@@ -95,16 +104,21 @@ export default function HeroAboutTransition({ isReady = true, onOpenResume }: He
             style={{ opacity: raysOpacity }}
             aria-hidden="true"
           >
-            <HeroLightRays isActive={isReady} />
+            <HeroLightRays isActive={heroReady} />
           </motion.div>
         )}
         <motion.div
           className="pointer-events-none absolute inset-0 z-[2]"
           initial={false}
-          animate={revealState}
-          transition={revealTransition}
+          animate={{ opacity: isReady && entranceState !== "checking" ? 1 : 0 }}
+          transition={entranceState === "playing" ? { duration: 0 } : revealTransition}
         >
-          <HeroPortraitLayer opacity={portraitOpacity} colorOpacity={portraitColorOpacity} monoOpacity={portraitMonoOpacity} />
+          <HeroPortraitLayer
+            opacity={portraitOpacity}
+            colorOpacity={portraitColorOpacity}
+            monoOpacity={portraitMonoOpacity}
+            entranceState={entranceState}
+          />
         </motion.div>
         <TransitionFrames frameOpacity={frameOpacity} sideFrameWidth={sideFrameWidth} topFrameHeight={topFrameHeight} bottomFrameHeight={bottomFrameHeight} leftFrameRotate={leftFrameRotate} rightFrameRotate={rightFrameRotate} topFrameRotate={topFrameRotate} bottomFrameRotate={bottomFrameRotate} slashFrameWidth={slashFrameWidth} slashFrameOpacity={slashFrameOpacity} />
         <motion.div
@@ -123,6 +137,9 @@ export default function HeroAboutTransition({ isReady = true, onOpenResume }: He
         >
           <AboutRevealLayer textOpacity={aboutTextOpacity} textY={aboutTextY} leftX={aboutLeftX} rightX={aboutRightX} metaOpacity={aboutOpacity} metaY={aboutMetaY} highlightOpacities={highlightOpacities} onOpenResume={onOpenResume} />
         </motion.div>
+        {entranceState === "playing" && (
+          <HeroEntrance isReady={isReady} onComplete={onEntranceComplete} />
+        )}
       </div>
     </section>
   );
